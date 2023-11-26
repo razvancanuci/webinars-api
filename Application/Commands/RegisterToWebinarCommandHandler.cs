@@ -1,17 +1,21 @@
-﻿using Domain.Requests;
+﻿using Application.Requests;
+using Domain.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Commands;
 
-public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRequest>
+public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRequest, IActionResult>
 {
-    public RegisterToWebinarCommandHandler()
+    private readonly IRepository _repository;
+    public RegisterToWebinarCommandHandler(IRepository repository)
     {
-        
+        _repository = repository;
     }
     
-    public Task Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await _repository.RegisterPersonToWebinarAsync(request.Person, request.WebinarId);
+        return new NoContentResult();
     }
 }

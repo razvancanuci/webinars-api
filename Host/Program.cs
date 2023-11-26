@@ -1,12 +1,13 @@
 using Application;
 using Asp.Versioning;
+using DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices().AddDataAccess();
 builder.Services.AddControllers();
 
 builder.Services.AddMvc();

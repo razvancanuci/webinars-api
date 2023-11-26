@@ -1,13 +1,21 @@
-﻿using Domain.Entities;
-using Domain.Requests;
+﻿using Application.Requests;
+using Domain.Entities;
+using Domain.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Queries;
 
-public class GetAvailableWebinarByIdQueryHandler : IRequestHandler<AvailableWebinarByIdRequest, Webinar>
+public class GetAvailableWebinarByIdQueryHandler : IRequestHandler<AvailableWebinarByIdRequest, IActionResult>
 {
-    public Task<Webinar> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
+    private readonly IRepository _repository;
+    public GetAvailableWebinarByIdQueryHandler(IRepository repository)
     {
-        throw new NotImplementedException();
+        _repository = repository;
+    }
+    public async Task<IActionResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
+    {
+        await _repository.GetWebinarByIdAsync(request.WebinarId);
+        return new OkObjectResult(new Webinar { Id = request.WebinarId });
     }
 }

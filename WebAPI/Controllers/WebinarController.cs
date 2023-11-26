@@ -1,5 +1,5 @@
-﻿using Asp.Versioning;
-using Domain.Requests;
+﻿using Application.Requests;
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,24 +22,25 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> GetAvailableWebinarsAsync(int page)
     {
         var availableWebinarsRequest = new AvailableWebinarsRequest { Page = page };
-        
         var result = await _mediator.Send(availableWebinarsRequest);
-        return Ok(result);
+        return result;
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetAvailableWebinarByIdAsync(int id)
+    public async Task<IActionResult> GetAvailableWebinarByIdAsync(int id)
     {
-        return Ok(id);
+        var webinarByIdRequest = new AvailableWebinarByIdRequest { WebinarId = id };
+        var result = await _mediator.Send(webinarByIdRequest);
+        return Ok();
     }
 
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> RegisterToWebinarAsync(RegisterWebinarRequest request)
     {
-        await _mediator.Send(request);
-        return NoContent();
+        var result = await _mediator.Send(request);
+        return result;
     }
 }

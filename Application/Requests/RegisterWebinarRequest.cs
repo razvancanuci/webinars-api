@@ -1,9 +1,10 @@
 ﻿using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Domain.Requests;
+namespace Application.Requests;
 
-public class RegisterWebinarRequest : IRequest
+public class RegisterWebinarRequest : IRequest<IActionResult>
 {
     public int WebinarId { get; set; }
     public Person Person { get; set; } = null!;
