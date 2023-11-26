@@ -15,7 +15,13 @@ public class GetAvailableWebinarByIdQueryHandler : IRequestHandler<AvailableWebi
     }
     public async Task<IActionResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
-        await _repository.GetWebinarByIdAsync(request.WebinarId);
-        return new OkObjectResult(new Webinar { Id = request.WebinarId });
+        var result = await _repository.GetWebinarByIdAsync(request.WebinarId);
+        
+        if (result is null)
+        {
+            return new NotFoundResult();
+        }
+
+        return new OkObjectResult(result);
     }
 }

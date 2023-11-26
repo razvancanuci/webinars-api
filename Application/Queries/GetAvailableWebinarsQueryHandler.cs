@@ -16,7 +16,8 @@ public class GetAvailableWebinarsQueryHandler : IRequestHandler<AvailableWebinar
     
     public async Task<IActionResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
-        await _repository.GetWebinarsAsync();
-        return  new OkObjectResult(new List<Webinar>{new Webinar{Title = "Webinar cu Vasile Lup"}});
+        var result = await _repository.GetWebinarsAsync(request.Page, request.ItemsPerPage);
+        
+        return  new OkObjectResult(result);
     }
 }

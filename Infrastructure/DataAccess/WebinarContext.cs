@@ -14,7 +14,7 @@ public class WebinarContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Webinar>().ToContainer("Webinars").HasPartitionKey(x => x.Host);
+        modelBuilder.Entity<Webinar>().ToContainer("Webinars");
 
         modelBuilder.Entity<Webinar>().Property(x => x.Id).HasValueGenerator<StringValueGenerator>();
         base.OnModelCreating(modelBuilder);

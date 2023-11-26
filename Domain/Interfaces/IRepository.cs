@@ -4,8 +4,8 @@ namespace Domain.Interfaces;
 
 public interface IRepository
 {
-    Task GetWebinarsAsync();
-    Task GetWebinarByIdAsync(string id);
-    Task RegisterPersonToWebinarAsync(Person person, string webinarId);
+    Task<IEnumerable<Webinar>> GetWebinarsAsync(int page, int itemsPerPage);
+    Task<Webinar?> GetWebinarByIdAsync(string id);
+    Task RegisterPersonToWebinarAsync(Webinar webinar);
     Task AddWebinarAsync(Webinar webinar);
 }

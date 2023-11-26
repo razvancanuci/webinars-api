@@ -1,30 +1,47 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
 public class WebinarRepository : IRepository
 {
-    public WebinarRepository()
+    private readonly WebinarContext _context;
+    public WebinarRepository(WebinarContext context)
     {
+        context.Database.EnsureCreated();
+        _context = context;
     }
-    public Task GetWebinarsAsync()
+    public async Task<IEnumerable<Webinar>> GetWebinarsAsync(int page, int itemsPerPage)
     {
-        return Task.CompletedTask;
+        var webinars = await _context.Webinars
+            .Skip( (page - 1) * itemsPerPage)
+            .Take(itemsPerPage)
+            .AsNoTracking()
+            .ToListAsync();
+        
+        return webinars;
     }
 
-    public Task GetWebinarByIdAsync(string id)
+    public async Task<Webinar?> GetWebinarByIdAsync(string id)
     {
-        return Task.CompletedTask;
+        var webinar = await _context.Webinars.FirstOrDefaultAsync(x => x.Id == id);
+        return webinar;
     }
 
-    public Task RegisterPersonToWebinarAsync(Person person, string webinarId)
+    public async Task RegisterPersonToWebinarAsync(Webinar webinar)
     {
-        return Task.CompletedTask;
+        await SaveAsync();
     }
 
-    public Task AddWebinarAsync(Webinar webinar)
+    public async Task AddWebinarAsync(Webinar webinar)
     {
-        return Task.CompletedTask;
+        await _context.Webinars.AddAsync(webinar);
+        await SaveAsync();
+    }
+
+    public async Task SaveAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }

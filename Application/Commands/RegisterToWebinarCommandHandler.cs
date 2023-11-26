@@ -15,7 +15,15 @@ public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRe
     
     public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
-        await _repository.RegisterPersonToWebinarAsync(request.Person, request.WebinarId);
+        var webinar = await _repository.GetWebinarByIdAsync(request.WebinarId);
+        
+        if (webinar is null)
+        {
+            return new NotFoundResult();
+        }
+        
+        webinar.PeopleRegistered.Add(request.Person);
+        await _repository.RegisterPersonToWebinarAsync(webinar);
         return new NoContentResult();
     }
 }

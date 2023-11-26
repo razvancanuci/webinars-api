@@ -5,6 +5,6 @@ namespace Application.Requests;
 
 public class AvailableWebinarsRequest : IRequest<IActionResult>
 {
-    public int ItemsPerPage { get; } = 20;
+    public int ItemsPerPage { get; } = 2;
     public int Page { get; init; }
 }

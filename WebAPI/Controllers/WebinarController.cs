@@ -23,6 +23,7 @@ public class WebinarController : ControllerBase
     {
         var availableWebinarsRequest = new AvailableWebinarsRequest { Page = page };
         var result = await _mediator.Send(availableWebinarsRequest);
+        
         return result;
     }
 
@@ -33,7 +34,8 @@ public class WebinarController : ControllerBase
     {
         var webinarByIdRequest = new AvailableWebinarByIdRequest { WebinarId = id };
         var result = await _mediator.Send(webinarByIdRequest);
-        return Ok();
+        
+        return result;
     }
 
     [HttpPatch]
@@ -41,6 +43,7 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> RegisterToWebinarAsync(RegisterWebinarRequest request)
     {
         var result = await _mediator.Send(request);
+        
         return result;
     }
 
@@ -49,7 +52,7 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> AddWebinarAsync(NewWebinarRequest request)
     {
         var result = await _mediator.Send(request);
-
+        
         return result;
     }
 }
