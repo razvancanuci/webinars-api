@@ -29,7 +29,7 @@ public class WebinarController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAvailableWebinarByIdAsync(int id)
+    public async Task<IActionResult> GetAvailableWebinarByIdAsync(string id)
     {
         var webinarByIdRequest = new AvailableWebinarByIdRequest { WebinarId = id };
         var result = await _mediator.Send(webinarByIdRequest);
@@ -41,6 +41,15 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> RegisterToWebinarAsync(RegisterWebinarRequest request)
     {
         var result = await _mediator.Send(request);
+        return result;
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> AddWebinarAsync(NewWebinarRequest request)
+    {
+        var result = await _mediator.Send(request);
+
         return result;
     }
 }

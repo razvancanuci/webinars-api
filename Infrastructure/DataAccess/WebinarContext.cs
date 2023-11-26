@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace DataAccess;
 
@@ -13,8 +14,9 @@ public class WebinarContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
+        modelBuilder.Entity<Webinar>().ToContainer("Webinars").HasPartitionKey(x => x.Host);
+
+        modelBuilder.Entity<Webinar>().Property(x => x.Id).HasValueGenerator<StringValueGenerator>();
         base.OnModelCreating(modelBuilder);
     }
 }

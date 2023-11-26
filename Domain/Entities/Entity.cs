@@ -1,6 +1,7 @@
 ﻿namespace Domain.Entities;
 
+#nullable disable
 public abstract class Entity
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
 }

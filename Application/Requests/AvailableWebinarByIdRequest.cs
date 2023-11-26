@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Requests;
-
+#nullable disable
 public class AvailableWebinarByIdRequest : IRequest<IActionResult>
 {
-    public int WebinarId { get; init; }
+    public string WebinarId { get; init; }
 }
