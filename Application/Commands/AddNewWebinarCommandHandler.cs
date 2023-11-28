@@ -8,11 +8,11 @@ namespace Application.Commands;
 
 public class AddNewWebinarCommandHandler : IRequestHandler<NewWebinarRequest, IActionResult>
 {
-    private readonly IRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public AddNewWebinarCommandHandler(IRepository repository)
+    public AddNewWebinarCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<IActionResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
@@ -24,7 +24,8 @@ public class AddNewWebinarCommandHandler : IRequestHandler<NewWebinarRequest, IA
             Host = request.Host,
             ScheduleDate = request.DateScheduled
         };
-        await _repository.AddWebinarAsync(webinar);
+        await _unitOfWork.WebinarRepository.InsertAsync(webinar);
+        await _unitOfWork.SaveAsync();
         return new CreatedResult("AddWebinar", request);
     }
 }

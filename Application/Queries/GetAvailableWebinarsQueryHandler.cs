@@ -1,5 +1,4 @@
 ﻿using Application.Requests;
-using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,15 +7,18 @@ namespace Application.Queries;
 
 public class GetAvailableWebinarsQueryHandler : IRequestHandler<AvailableWebinarsRequest, IActionResult>
 {
-    private readonly IRepository _repository;
-    public GetAvailableWebinarsQueryHandler(IRepository repository)
+    private readonly IUnitOfWork _unitOfWork;
+    public GetAvailableWebinarsQueryHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<IActionResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
-        var result = await _repository.GetWebinarsAsync(request.Page, request.ItemsPerPage);
+        var result = await _unitOfWork.WebinarRepository
+            .GetAsync(entity => entity.ScheduleDate > DateTime.UtcNow.AddDays(-2),
+                query => query.Skip((request.Page - 1) * request.ItemsPerPage).Take(request.ItemsPerPage),
+                asNoTracking: true);
         
         return  new OkObjectResult(result);
     }

@@ -1,11 +1,11 @@
-﻿using Domain.Entities;
+﻿using System.Linq.Expressions;
+using Domain.Entities;
 
 namespace Domain.Interfaces;
 
-public interface IRepository
+public interface IRepository<TEntity>
+where TEntity: Entity
 {
-    Task<IEnumerable<Webinar>> GetWebinarsAsync(int page, int itemsPerPage);
-    Task<Webinar?> GetWebinarByIdAsync(string id);
-    Task RegisterPersonToWebinarAsync(Webinar webinar);
-    Task AddWebinarAsync(Webinar webinar);
+    Task<IEnumerable<TEntity>> GetAsync(Expression<Func<TEntity, bool>> criteria, Func<IQueryable<TEntity>, IQueryable<TEntity>>? additionalQuery = null, bool asNoTracking = false);
+    Task InsertAsync(TEntity entity);
 }

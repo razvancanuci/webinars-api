@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repositories;
+using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +11,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<IRepository, WebinarRepository>();
+        services.AddScoped<IRepository<Webinar>, WebinarRepository>();
+        services.AddTransient<IUnitOfWork, UnitOfWork>();
         services.AddDbContext<WebinarContext>(options =>
             options.UseCosmos(
                 configuration["Database:ConnectionString"],

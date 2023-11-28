@@ -7,15 +7,18 @@ namespace Application.Commands;
 
 public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRequest, IActionResult>
 {
-    private readonly IRepository _repository;
-    public RegisterToWebinarCommandHandler(IRepository repository)
+    private readonly IUnitOfWork _unitOfWork;
+    public RegisterToWebinarCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
-        var webinar = await _repository.GetWebinarByIdAsync(request.WebinarId);
+        var webinarList = await _unitOfWork.WebinarRepository
+            .GetAsync(entity => entity.Id == request.WebinarId);
+        
+        var webinar = webinarList.FirstOrDefault();
         
         if (webinar is null)
         {
@@ -23,7 +26,7 @@ public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRe
         }
         
         webinar.PeopleRegistered.Add(request.Person);
-        await _repository.RegisterPersonToWebinarAsync(webinar);
+        await _unitOfWork.SaveAsync();
         return new NoContentResult();
     }
 }
