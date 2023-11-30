@@ -24,6 +24,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.Services.AutoCreateDb();
 }
 
 app.UseHttpsRedirection();
@@ -32,3 +33,5 @@ app.MapControllers();
 
 app.Run();
 
+
+public partial class Program { }

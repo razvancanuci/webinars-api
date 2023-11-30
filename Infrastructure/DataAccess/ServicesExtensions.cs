@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DataAccess;
 
-public static class ServiceCollectionExtensions
+public static class ServicesExtensions
 {
     public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
     {
@@ -19,5 +19,14 @@ public static class ServiceCollectionExtensions
                 configuration["Database:DbName"]
             ));
         return services;
+    }
+
+    public static IServiceProvider AutoCreateDb(this IServiceProvider serviceProvider)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<WebinarContext>();
+        context.Database.EnsureCreated();
+
+        return serviceProvider;
     }
 }

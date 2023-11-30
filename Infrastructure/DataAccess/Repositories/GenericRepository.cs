@@ -8,10 +8,9 @@ namespace DataAccess.Repositories;
 public class GenericRepository<TEntity> : IRepository<TEntity>
 where TEntity : Entity
 {
-    public DbSet<TEntity> DbSet { get; set; }
-    public GenericRepository(WebinarContext context)
+    private DbSet<TEntity> DbSet { get; set; }
+    protected GenericRepository(WebinarContext context)
     {
-        context.Database.EnsureCreated();
         DbSet = context.Set<TEntity>();
     }
     
