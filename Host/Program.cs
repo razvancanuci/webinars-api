@@ -1,11 +1,17 @@
 using Application;
 using Asp.Versioning;
 using DataAccess;
+using Microsoft.FeatureManagement;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Configuration.AddAzureAppConfiguration(builder.Configuration["AppConfig:ConnectionString"]);
+//builder.Configuration.AddAzureKeyVault(new Uri(builder.Configuration["KeyVault:Uri"] ?? string.Empty), new DefaultAzureCredential());
+builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
+
 
 builder.Services.AddApplicationServices().AddDataAccess(builder.Configuration);
 builder.Services.AddControllers();
