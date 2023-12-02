@@ -1,30 +1,20 @@
 ﻿using System.Linq.Expressions;
-using Application.Queries;
+using Application.Handlers.Queries;
 using Application.Requests;
 using AutoFixture.Xunit2;
 using Domain.Entities;
-using Domain.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Application.UnitTests.Queries;
+namespace Application.UnitTests.Handlers.Queries;
 
-public class GetAvailableWebinarByIdQueryHandlerTests
+public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<GetAvailableWebinarByIdQueryHandler>
 {
-    private readonly Mock<IRepository<Webinar>> _webinarRepositoryMock;
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    
-    private readonly GetAvailableWebinarByIdQueryHandler _handler;
-    
+    protected override GetAvailableWebinarByIdQueryHandler Handler { get; }
     public GetAvailableWebinarByIdQueryHandlerTests()
     {
-        _webinarRepositoryMock = new();
-        
-        _unitOfWorkMock = new();
-        _unitOfWorkMock.Setup(x => x.WebinarRepository).Returns(_webinarRepositoryMock.Object);
-
-        _handler = new (_unitOfWorkMock.Object);
+        Handler = new (UnitOfWorkMock.Object);
     }
 
     [Theory]
@@ -32,17 +22,17 @@ public class GetAvailableWebinarByIdQueryHandlerTests
     public async Task Handle_ReturnsNotFoundResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
     {
         // Arrange
-        _webinarRepositoryMock.Setup(x => x.GetAsync(
+        WebinarRepositoryMock.Setup(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true
         )).ReturnsAsync(new List<Webinar>());
         
         // Act
-        var result = await _handler.Handle(request, new CancellationToken());
+        var result = await Handler.Handle(request, CancellationToken.None);
 
         // Assert
-        _webinarRepositoryMock.Verify(x => x.GetAsync(
+        WebinarRepositoryMock.Verify(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true
@@ -55,17 +45,17 @@ public class GetAvailableWebinarByIdQueryHandlerTests
     public async Task Handle_ReturnsBadRequestResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
     {
         // Arrange
-        _webinarRepositoryMock.Setup(x => x.GetAsync(
+        WebinarRepositoryMock.Setup(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true
         )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow.AddDays(-4)}});
         
         // Act
-        var result = await _handler.Handle(request, new CancellationToken());
+        var result = await Handler.Handle(request, CancellationToken.None);
 
         // Assert
-        _webinarRepositoryMock.Verify(x => x.GetAsync(
+        WebinarRepositoryMock.Verify(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true
@@ -78,17 +68,17 @@ public class GetAvailableWebinarByIdQueryHandlerTests
     public async Task Handle_ReturnsOKResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
     {
         // Arrange
-        _webinarRepositoryMock.Setup(x => x.GetAsync(
+        WebinarRepositoryMock.Setup(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true
         )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow}});
         
         // Act
-        var result = await _handler.Handle(request, new CancellationToken());
+        var result = await Handler.Handle(request, CancellationToken.None);
 
         // Assert
-        _webinarRepositoryMock.Verify(x => x.GetAsync(
+        WebinarRepositoryMock.Verify(x => x.GetAsync(
             It.IsAny<Expression<Func<Webinar, bool>>>(),
             It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
             true

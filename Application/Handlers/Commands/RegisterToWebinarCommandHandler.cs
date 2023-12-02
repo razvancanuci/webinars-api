@@ -3,19 +3,15 @@ using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Application.Commands;
+namespace Application.Handlers.Commands;
 
-public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRequest, IActionResult>
+public class RegisterToWebinarCommandHandler : RequestHandlerBase, IRequestHandler<RegisterWebinarRequest, IActionResult>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    public RegisterToWebinarCommandHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+    public RegisterToWebinarCommandHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
     
     public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
-        var webinarList = await _unitOfWork.WebinarRepository
+        var webinarList = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.Id == request.WebinarId);
         
         var webinar = webinarList.FirstOrDefault();
@@ -26,7 +22,7 @@ public class RegisterToWebinarCommandHandler : IRequestHandler<RegisterWebinarRe
         }
         
         webinar.PeopleRegistered.Add(request.Person);
-        await _unitOfWork.SaveAsync();
+        await UnitOfWork.SaveAsync();
         return new NoContentResult();
     }
 }

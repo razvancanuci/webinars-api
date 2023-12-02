@@ -3,18 +3,14 @@ using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Application.Queries;
+namespace Application.Handlers.Queries;
 
-public class GetAvailableWebinarByIdQueryHandler : IRequestHandler<AvailableWebinarByIdRequest, IActionResult>
+public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestHandler<AvailableWebinarByIdRequest, IActionResult>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    public GetAvailableWebinarByIdQueryHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+    public GetAvailableWebinarByIdQueryHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
     public async Task<IActionResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
-        var webinars = await _unitOfWork.WebinarRepository
+        var webinars = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.Id == request.WebinarId, asNoTracking: true);
 
         var result = webinars.FirstOrDefault();

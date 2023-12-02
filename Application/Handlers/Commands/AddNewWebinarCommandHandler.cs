@@ -4,16 +4,11 @@ using Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Application.Commands;
+namespace Application.Handlers.Commands;
 
-public class AddNewWebinarCommandHandler : IRequestHandler<NewWebinarRequest, IActionResult>
+public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<NewWebinarRequest, IActionResult>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    
-    public AddNewWebinarCommandHandler(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
+    public AddNewWebinarCommandHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
     
     public async Task<IActionResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
     {
@@ -24,8 +19,8 @@ public class AddNewWebinarCommandHandler : IRequestHandler<NewWebinarRequest, IA
             Host = request.Host,
             ScheduleDate = request.DateScheduled
         };
-        await _unitOfWork.WebinarRepository.InsertAsync(webinar);
-        await _unitOfWork.SaveAsync();
+        await UnitOfWork.WebinarRepository.InsertAsync(webinar);
+        await UnitOfWork.SaveAsync();
         return new CreatedResult("AddWebinar", request);
     }
 }

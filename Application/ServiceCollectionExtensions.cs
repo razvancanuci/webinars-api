@@ -1,5 +1,5 @@
 ﻿
-using Application.Queries;
+using Application.Handlers.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
