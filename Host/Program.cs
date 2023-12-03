@@ -14,7 +14,14 @@ if (!string.IsNullOrEmpty(builder.Configuration["AppConfig:ConnectionString"]) &
     builder.Configuration.AddAzureAppConfiguration(builder.Configuration["AppConfig:ConnectionString"]);
     builder.Configuration.AddAzureKeyVault(new Uri(builder.Configuration["KeyVault:Uri"] ?? string.Empty), new DefaultAzureCredential());
 }
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policyBuilder => policyBuilder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 
 builder.Services.AddApplicationServices().AddDataAccess(builder.Configuration);
@@ -37,6 +44,7 @@ if (app.Environment.IsDevelopment())
     app.Services.AutoCreateDb();
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.MapControllers();
