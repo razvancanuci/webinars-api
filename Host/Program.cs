@@ -3,6 +3,7 @@ using Asp.Versioning;
 using Azure.Identity;
 using DataAccess;
 using Microsoft.FeatureManagement;
+using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 
+builder.Services.AddExceptionHandler<ExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddApplicationServices().AddDataAccess(builder.Configuration);
 builder.Services.AddControllers();
 
@@ -46,6 +49,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseExceptionHandler();
 
 app.MapControllers();
 
