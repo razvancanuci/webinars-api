@@ -1,4 +1,7 @@
 using System.Net;
+using System.Net.Http.Json;
+using Application.Requests;
+using AutoFixture.Xunit2;
 using DataAccess;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +30,66 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+    
+    [Theory]
+    [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5862", "1.0")]
+    public async Task GetWebinarById_Returns_StatusCodeNotFound(string webinarId, string apiVersion)
+    {
+        // Arrange
+        var httpClient = _factory.CreateClient();
+        
+        // Act
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar/{webinarId}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Theory]
+    [InlineData("1.0", 1)]
+    public async Task GetWebinars_Returns_StatusCodeOK(string apiVersion, int page)
+    {
+        // Arrange
+        var httpClient = _factory.CreateClient();
+        
+        // Act
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar?page={page}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+    }
+
+    [Theory]
+    [AutoData]
+    public async Task AddWebinar_Returns_StatusCodeCreated(NewWebinarRequest webinar)
+    {
+        // Arrange
+        var apiVersion = "1.0";
+        var httpClient = _factory.CreateClient();
+        
+        // Act
+        var response = await httpClient.PostAsJsonAsync($"/api/v{apiVersion}/Webinar", webinar);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+    
+    [Theory]
+    [AutoData]
+    public async Task RegisterToWebinar_Returns_StatusCodeNotFound(RegisterWebinarRequest webinarRegistration)
+    {
+        // Arrange
+        var apiVersion = "1.0";
+        var httpClient = _factory.CreateClient();
+        
+        // Act
+        var response = await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/Webinar", webinarRegistration);
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    
 
     public async Task InitializeAsync()
     {
