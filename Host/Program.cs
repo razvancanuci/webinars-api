@@ -2,6 +2,7 @@ using Application;
 using Asp.Versioning;
 using Azure.Identity;
 using DataAccess;
+using Domain.Settings;
 using Microsoft.FeatureManagement;
 using WebAPI.Handlers;
 
@@ -23,11 +24,11 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
-
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
-builder.Services.AddApplicationServices().AddDataAccess(builder.Configuration);
+builder.Services.AddApplicationServices().AddDataAccess();
 builder.Services.AddControllers();
 
 builder.Services.AddMvc();

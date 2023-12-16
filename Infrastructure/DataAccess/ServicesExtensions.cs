@@ -1,23 +1,29 @@
 ﻿using DataAccess.Repositories;
 using Domain.Entities;
 using Domain.Interfaces;
+using Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DataAccess;
 
 public static class ServicesExtensions
 {
-    public static IServiceCollection AddDataAccess(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDataAccess(this IServiceCollection services)
     {
         services.AddScoped<IRepository<Webinar>, WebinarRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
-        services.AddDbContext<WebinarContext>(options =>
+        services.AddDbContext<WebinarContext>((provider, options) =>
+        {
+            var dbSettings = provider.GetRequiredService<IOptions<DatabaseSettings>>().Value;
             options.UseCosmos(
-                configuration["Database:ConnectionString"],
-                configuration["Database:DbName"]
-            ));
+                dbSettings.ConnectionString,
+                dbSettings.DbName
+            );
+        });
+           
         return services;
     }
 
