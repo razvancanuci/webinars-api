@@ -1,5 +1,7 @@
 ﻿using Application.Requests;
+using Domain.Dtos;
 using Domain.Interfaces;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +18,8 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
             .GetAsync(entity => entity.ScheduleDate > dateCompared,
                 query => query.Skip((request.Page - 1) * request.ItemsPerPage).Take(request.ItemsPerPage),
                 asNoTracking: true);
+        var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
-        return  new OkObjectResult(result);
+        return  new OkObjectResult(mappedResult);
     }
 }
