@@ -16,7 +16,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
         var dateCompared = DateTime.UtcNow.AddDays(-2);
         var result = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.ScheduleDate > dateCompared,
-                query => query.Skip((request.Page - 1) * request.ItemsPerPage).Take(request.ItemsPerPage),
+                query => query.OrderBy(x => x.ScheduleDate).Skip((request.Page - 1) * request.ItemsPerPage).Take(request.ItemsPerPage),
                 asNoTracking: true);
         var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
