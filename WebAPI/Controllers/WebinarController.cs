@@ -32,7 +32,7 @@ public class WebinarController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAvailableWebinarByIdAsync(string id)
     {
-        var webinarByIdRequest = new AvailableWebinarByIdRequest { WebinarId = id };
+        var webinarByIdRequest = new AvailableWebinarByIdRequest(id);
         var result = await _mediator.Send(webinarByIdRequest);
         
         return result;

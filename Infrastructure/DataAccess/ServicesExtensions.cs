@@ -3,7 +3,6 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Requests;
 #nullable disable
-public class AvailableWebinarByIdRequest : IRequest<IActionResult>
+public record AvailableWebinarByIdRequest(string WebinarId) : IRequest<IActionResult>
 {
-    public string WebinarId { get; init; }
+    public string Key => $"webinar-by-id-{WebinarId}";
+    public TimeSpan? Expiration => TimeSpan.FromHours(1);
 }

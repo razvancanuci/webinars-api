@@ -5,6 +5,7 @@ using Azure.Identity;
 using DataAccess;
 using Domain.Settings;
 using Microsoft.FeatureManagement;
+using StackExchange.Redis;
 using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,8 @@ builder.Services.AddRateLimiter(options =>
                 Window = TimeSpan.FromMinutes(1)
             }));
 });
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"] ?? string.Empty));
+
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
