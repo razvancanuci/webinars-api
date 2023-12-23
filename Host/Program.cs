@@ -67,6 +67,10 @@ builder.Services.AddHealthChecks()
             return true;
         });
 
+builder.Services.AddApplicationInsightsTelemetry(options =>
+{
+    options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"] ?? string.Empty;
+});
 builder.Services.AddApplicationServices().AddDataAccess();
 builder.Services.AddControllers();
 
