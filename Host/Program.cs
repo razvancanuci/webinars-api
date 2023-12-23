@@ -4,6 +4,8 @@ using Asp.Versioning;
 using Azure.Identity;
 using DataAccess;
 using Domain.Settings;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using StackExchange.Redis;
 using WebAPI.Handlers;
@@ -46,6 +48,25 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddHealthChecks()
+    .AddRedis(builder.Configuration["Redis:ConnectionString"] ?? string.Empty)
+    .AddDbContextCheck<WebinarContext>(
+        "cosmosDbHealthCheck",
+        HealthStatus.Unhealthy,
+        customTestQuery: async (context, _) =>
+        {
+            try
+            {
+                await context.Database.GetCosmosClient().ReadAccountAsync().ConfigureAwait(false);
+            }
+            catch (HttpRequestException)
+            {
+                return false;
+            }
+            return true;
+        });
+
 builder.Services.AddApplicationServices().AddDataAccess();
 builder.Services.AddControllers();
 
@@ -71,6 +92,7 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseRateLimiter();
 
+app.MapHealthChecks("/health");
 app.MapControllers();
 
 app.Run();
