@@ -2,13 +2,19 @@
 using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Commands;
 
 public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<NewWebinarRequest, IActionResult>
 {
-    public AddNewWebinarCommandHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
+    private readonly IFileStorage _fileStorage;
+
+    public AddNewWebinarCommandHandler(IUnitOfWork unitOfWork, IFileStorage fileStorage) : base(unitOfWork)
+    {
+        _fileStorage = fileStorage;
+    }
     
     public async Task<IActionResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
     {
@@ -19,8 +25,29 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<N
             Host = request.Host,
             ScheduleDate = request.DateScheduled
         };
+        
         await UnitOfWork.WebinarRepository.InsertAsync(webinar);
         await UnitOfWork.SaveAsync();
+        
+        if (request.Image is not null)
+        {
+            await UploadImageAsync(webinar, request.Image);
+        }
+        
         return new CreatedResult("AddWebinar", request);
+    }
+
+    private async Task UploadImageAsync(Webinar webinar, IFormFile image)
+    {
+        var webinars = await UnitOfWork.WebinarRepository.GetAsync(w => 
+            w.Title == webinar.Title &&
+            w.Description == webinar.Description &&
+            w.Host == webinar.Host && 
+            w.ScheduleDate == webinar.ScheduleDate);
+
+        webinar = webinars.First();
+        var imageUrl = webinar.Id;
+
+        await _fileStorage.CreateAsync(imageUrl, image);
     }
 }

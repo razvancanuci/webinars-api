@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Requests;
@@ -10,4 +11,5 @@ public class NewWebinarRequest : IRequest<IActionResult>
     public string Description { get; set; }
     public string Host { get; set; }
     public DateTime DateScheduled { get; set; }
+    public IFormFile Image { get; set; }
 }

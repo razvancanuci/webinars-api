@@ -1,10 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text;
 using Application.Requests;
 using AutoFixture.Xunit2;
+using Azure.Storage.Blobs;
 using DataAccess;
+using Domain.Settings;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace IntegrationTests.Controllers;
 
@@ -59,16 +64,24 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
-    [Theory]
-    [AutoData]
-    public async Task AddWebinar_Returns_StatusCodeCreated(NewWebinarRequest webinar)
+    [Fact]
+    public async Task AddWebinar_Returns_StatusCodeCreated()
     {
         // Arrange
+        var request = new NewWebinarRequest
+        {
+            Title = "title",
+            Host = "host",
+            Description = "Description",
+            DateScheduled = DateTime.UtcNow.AddDays(7),
+        };
         var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
         
         // Act
-        var response = await httpClient.PostAsJsonAsync($"/api/v{apiVersion}/Webinar", webinar);
+        var response = await httpClient.PostAsJsonAsync(
+            $"/api/v{apiVersion}/Webinar?Title={request.Title}&Description={request.Description}&Host={request.Host}&DateScheduled={request.DateScheduled}",
+            request);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -104,7 +117,23 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         using var sp = _factory.Services.CreateScope();
         var dbContext = sp.ServiceProvider.GetRequiredService<WebinarContext>();
+        var blobSettings = sp.ServiceProvider.GetRequiredService<IOptions<AzureStorageSettings>>().Value;
         
         await dbContext.Database.EnsureDeletedAsync();
+        await DeleteContainer(blobSettings);
+        
+    }
+
+    private async Task DeleteContainer(AzureStorageSettings settings)
+    {
+        var blobServiceClient = new BlobServiceClient(settings.ConnectionString);
+        var container = blobServiceClient.GetBlobContainerClient(settings.ContainerName);
+
+        var containerExists = await container.ExistsAsync();
+
+        if (containerExists)
+        {
+            await blobServiceClient.DeleteBlobContainerAsync(settings.ContainerName);
+        }
     }
 }

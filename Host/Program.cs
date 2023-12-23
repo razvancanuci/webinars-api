@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using Application;
 using Asp.Versioning;
 using Azure.Identity;
+using AzureStorage;
 using DataAccess;
 using Domain.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,8 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"] ?? string.Empty));
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
+builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("Storage"));
+
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -71,7 +74,11 @@ builder.Services.AddApplicationInsightsTelemetry(options =>
 {
     options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"] ?? string.Empty;
 });
-builder.Services.AddApplicationServices().AddDataAccess();
+
+builder.Services.AddApplicationServices()
+    .AddDataAccess()
+    .AddAzureBlobStorage();
+
 builder.Services.AddControllers();
 
 builder.Services.AddMvc();
