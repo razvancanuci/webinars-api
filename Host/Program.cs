@@ -67,8 +67,13 @@ builder.Services.AddHealthChecks()
             {
                 return false;
             }
+
             return true;
-        });
+        })
+    .AddAzureBlobStorage(
+        builder.Configuration["Storage:ConnectionString"] ?? string.Empty,
+        builder.Configuration["Storage:ContainerName"] ?? string.Empty
+    );
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
