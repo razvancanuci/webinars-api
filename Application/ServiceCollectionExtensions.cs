@@ -2,8 +2,11 @@
 using Application.Handlers.Queries;
 using Application.Services.Implementations;
 using Application.Services.Interfaces;
+using Application.Validators;
 using Domain.Dtos;
 using Domain.Entities;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Mapster;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +18,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAvailableWebinarsQueryHandler).Assembly));
         services.RegisterMapsterConfiguration();
+        services.AddFluentValidation();
         services.AddScoped<ICacheService, CacheService>();
         return services;
     }
@@ -23,6 +27,14 @@ public static class ServiceCollectionExtensions
     {
         TypeAdapterConfig<Webinar, WebinarShortInfoDto>.NewConfig();
         TypeAdapterConfig<Webinar, WebinarInfoDto>.NewConfig();
+        return services;
+    }
+
+    private static IServiceCollection AddFluentValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<NewWebinarRequestValidator>();
+        services.AddFluentValidationAutoValidation();
+
         return services;
     }
 }
