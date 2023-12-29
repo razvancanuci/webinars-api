@@ -1,13 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 using Application.Requests;
-using AutoFixture.Xunit2;
 using Azure.Storage.Blobs;
 using DataAccess;
+using Domain.Entities;
 using Domain.Settings;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -72,7 +70,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         {
             Title = "title",
             Host = "host",
-            Description = "Description",
+            Description = "This is the Description",
             DateScheduled = DateTime.UtcNow.AddDays(7),
         };
         var apiVersion = "1.0";
@@ -87,11 +85,19 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
     
-    [Theory]
-    [AutoData]
-    public async Task RegisterToWebinar_Returns_StatusCodeNotFound(RegisterWebinarRequest webinarRegistration)
+    [Fact]
+    public async Task RegisterToWebinar_Returns_StatusCodeNotFound()
     {
         // Arrange
+        var webinarRegistration = new RegisterWebinarRequest
+        {
+            WebinarId = "1",
+            Person = new Person
+            {
+                Email = "a@a.a",
+                Name = "aaaaa",
+            }
+        };
         var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
         
@@ -102,8 +108,6 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
     
-    
-
     public async Task InitializeAsync()
     {
         using var sp = _factory.Services.CreateScope();

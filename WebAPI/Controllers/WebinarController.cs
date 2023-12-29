@@ -40,6 +40,7 @@ public class WebinarController : ControllerBase
 
     [HttpPatch]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> RegisterToWebinarAsync(RegisterWebinarRequest request)
     {
@@ -50,6 +51,7 @@ public class WebinarController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddWebinarAsync(NewWebinarRequest request)
     {
         var result = await _mediator.Send(request);
