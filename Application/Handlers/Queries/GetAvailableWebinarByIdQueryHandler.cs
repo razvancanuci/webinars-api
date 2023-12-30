@@ -1,6 +1,7 @@
 ﻿using Application.Requests;
 using Application.Services.Interfaces;
 using Domain.Dtos;
+using Domain.Entities;
 using Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -21,7 +22,16 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestH
     {
         var webinars = await _cacheService.GetOrCreateAsync(request.Key,
             () => UnitOfWork.WebinarRepository
-                .GetAsync(entity => entity.Id == request.WebinarId, asNoTracking: true),
+                .GetAsync(entity => entity.Id == request.WebinarId,
+                    additionalQuery: query => query.Select(w => new Webinar
+                    {
+                       Id = w.Id,
+                       Description = w.Description,
+                       Host = w.Host,
+                       Title = w.Title,
+                       ScheduleDate = w.ScheduleDate
+                    }),
+                    asNoTracking: true),
             request.Expiration);
         
         var result = webinars.FirstOrDefault();
@@ -31,7 +41,7 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestH
             return new NotFoundObjectResult("The id was not found");
         }
 
-        if (result.ScheduleDate <= DateTime.UtcNow.AddDays(-2))
+        if (!result.IsAvailable())
         {
             return new BadRequestObjectResult("The webinar registrations were finished");
         }

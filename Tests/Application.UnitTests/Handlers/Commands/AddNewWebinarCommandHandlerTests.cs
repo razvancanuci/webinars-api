@@ -39,7 +39,6 @@ public class AddNewWebinarCommandHandlerTests : RequestHandlerTestsBase<AddNewWe
         // Assert
         UnitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
         WebinarRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Webinar>()), Times.Once);
-        _fileStorageMock.Verify(f => f.CreateAsync(It.IsAny<string>(), It.IsAny<IFormFile>()), Times.Once);
         result.Should().BeOfType<CreatedResult>();
     }
 

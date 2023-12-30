@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Constants;
+
+namespace Domain.Entities;
 
 #nullable disable
 
@@ -9,4 +11,6 @@ public class Webinar : Entity
     public string Host { get; set; }
     public DateTime ScheduleDate { get; set; }
     public List<Person> PeopleRegistered { get; set; } = new();
+
+    public bool IsAvailable() => ScheduleDate > DateTimeConstants.AvailabilityDate;
 }

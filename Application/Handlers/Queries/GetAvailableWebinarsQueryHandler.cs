@@ -1,5 +1,7 @@
 ﻿using Application.Requests;
+using Domain.Constants;
 using Domain.Dtos;
+using Domain.Entities;
 using Domain.Interfaces;
 using Mapster;
 using MediatR;
@@ -13,10 +15,17 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
 
     public async Task<IActionResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
-        var dateCompared = DateTime.UtcNow.AddDays(-2);
         var result = await UnitOfWork.WebinarRepository
-            .GetAsync(entity => entity.ScheduleDate > dateCompared,
-                query => query.OrderBy(x => x.ScheduleDate).Skip((request.Page - 1) * request.ItemsPerPage).Take(request.ItemsPerPage),
+            .GetAsync(entity => entity.ScheduleDate > DateTimeConstants.AvailabilityDate,
+                query => query.OrderBy(x => x.ScheduleDate)
+                    .Skip((request.Page - 1) * request.ItemsPerPage)
+                    .Take(request.ItemsPerPage)
+                    .Select(w => new Webinar
+                    {
+                        Id = w.Id,
+                        Title = w.Title,
+                        Host = w.Host
+                    }),
                 asNoTracking: true);
         var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
