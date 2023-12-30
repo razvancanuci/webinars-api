@@ -16,12 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-if (!string.IsNullOrEmpty(builder.Configuration["AppConfig:ConnectionString"]) &&
-    !string.IsNullOrEmpty(builder.Configuration["KeyVault:Uri"]))
+if (!string.IsNullOrEmpty(builder.Configuration["AppConfig:ConnectionString"]))
 {
-    builder.Configuration.AddAzureAppConfiguration(builder.Configuration["AppConfig:ConnectionString"]);
-    builder.Configuration.AddAzureKeyVault(new Uri(builder.Configuration["KeyVault:Uri"] ?? string.Empty),
-        new DefaultAzureCredential());
+    builder.Configuration.AddAzureAppConfiguration(options =>
+    {
+        options.Connect(
+                builder.Configuration["AppConfig:ConnectionString"])
+            .ConfigureKeyVault(kv =>
+            {
+                kv.SetCredential(new DefaultAzureCredential());
+            });
+    });
 }
 
 builder.Services.AddCors(options =>
