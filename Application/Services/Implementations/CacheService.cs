@@ -20,15 +20,20 @@ public class CacheService : ICacheService
         
         if (json.IsNullOrEmpty)
         {
-            var queryResult = await dbQuery();
-            
-            var cache = JsonConvert.SerializeObject(queryResult);
-            await _cache.StringSetAsync(key, cache, expiration ?? DefaultExpiration);
-            
-            return queryResult;
+            return await ExecuteQuery(key, dbQuery, expiration ?? DefaultExpiration);
         }
         
         var result = JsonConvert.DeserializeObject<T>(json.ToString());
         return result;
+    }
+
+    private async Task<T> ExecuteQuery<T>(string key, Func<Task<T>> dbQuery, TimeSpan expiration)
+    {
+        var queryResult = await dbQuery();
+            
+        var cache = JsonConvert.SerializeObject(queryResult);
+        await _cache.StringSetAsync(key, cache, expiration);
+            
+        return queryResult;
     }
 }

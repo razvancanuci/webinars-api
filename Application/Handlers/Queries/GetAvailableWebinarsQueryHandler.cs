@@ -27,6 +27,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
                         Host = w.Host
                     }),
                 asNoTracking: true);
+        
         var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
         return  new OkObjectResult(mappedResult);
