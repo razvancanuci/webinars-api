@@ -73,8 +73,8 @@ builder.Services.AddMassTransit(x =>
     x.UsingAzureServiceBus((context, cfg) =>
     {
         cfg.Host(builder.Configuration["ServiceBus:ConnectionString"]);
-        cfg.Message<SendEmailDto>(
-            x => x.SetEntityName("send-email-registration-queue"));
+        cfg.Message<SendEmailRegistrationDto>(
+            x => x.SetEntityName("send-emails-topic"));
         cfg.ConfigureEndpoints(context);
     });
 });

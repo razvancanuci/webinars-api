@@ -32,7 +32,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, IRequestHandl
         webinar.PeopleRegistered.Add(request.Person);
         await UnitOfWork.SaveAsync();
 
-        var sendEmailDto = new SendEmailDto(
+        var sendEmailDto = new SendEmailRegistrationDto(
             request.Person.Name,
             request.Person.Email,
             webinar.Title,
@@ -43,7 +43,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, IRequestHandl
         return new NoContentResult();
     }
 
-    private async Task SendEmail(SendEmailDto emailDto)
+    private async Task SendEmail(SendEmailRegistrationDto emailDto)
     {
         await _publishEndpoint.Publish(emailDto);
     }

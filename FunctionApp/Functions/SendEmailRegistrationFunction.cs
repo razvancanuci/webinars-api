@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Azure.Messaging.ServiceBus;
 using Domain.Dtos;
+using FunctionApp.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -17,13 +19,16 @@ public class SendEmailRegistrationFunction
     }
 
     [Function(nameof(SendEmailRegistrationFunction))]
-    public void Run([ServiceBusTrigger("send-email-registration-queue", Connection = "ServiceBus:ConnectionString")] ServiceBusReceivedMessage message)
+    public void Run([ServiceBusTrigger("send-emails-topic",
+        "send-email-registration-subscription",
+        Connection = "ServiceBus:ConnectionString")] ServiceBusReceivedMessage message)
     {
-        var emailDto = JsonConvert.DeserializeObject<SendEmailDto>(Encoding.UTF8.GetString(message.Body));
+        var emailDto = JsonConvert.DeserializeObject<SendEmailRegistrationModel>(Encoding.UTF8.GetString(message.Body))?.Message;
         
         _logger.LogInformation("Name {name}",emailDto?.Name);
         _logger.LogInformation("Email {email}",emailDto?.Email);
         _logger.LogInformation("Title {title}",emailDto?.WebinarTitle);
         _logger.LogInformation("Host {host}",emailDto?.WebinarHost);
+        
     }
 }
