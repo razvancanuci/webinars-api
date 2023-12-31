@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "Tests\I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureStorage", "Infrastructure\AzureStorage\AzureStorage.csproj", "{15B55612-A276-4701-B7E5-7C18392A24CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionApp", "FunctionApp\FunctionApp.csproj", "{1A1D27D9-FBA9-47AA-9327-198ABDE65307}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{15B55612-A276-4701-B7E5-7C18392A24CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15B55612-A276-4701-B7E5-7C18392A24CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15B55612-A276-4701-B7E5-7C18392A24CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A1D27D9-FBA9-47AA-9327-198ABDE65307}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A1D27D9-FBA9-47AA-9327-198ABDE65307}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A1D27D9-FBA9-47AA-9327-198ABDE65307}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A1D27D9-FBA9-47AA-9327-198ABDE65307}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AF8B643E-6947-47B5-B621-EAC3AAF3125F} = {AD7A7657-3A98-4E46-B98F-AC84645461E5}

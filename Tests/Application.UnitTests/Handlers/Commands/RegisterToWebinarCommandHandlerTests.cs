@@ -4,6 +4,7 @@ using Application.Requests;
 using AutoFixture.Xunit2;
 using Domain.Entities;
 using FluentAssertions;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -11,11 +12,13 @@ namespace Application.UnitTests.Handlers.Commands;
 
 public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<RegisterToWebinarCommandHandler>
 {
+    private readonly Mock<IPublishEndpoint> _publishEndpointMock;
     protected override RegisterToWebinarCommandHandler Handler { get; }
     
     public RegisterToWebinarCommandHandlerTests()
     {
-        Handler = new RegisterToWebinarCommandHandler(UnitOfWorkMock.Object);
+        _publishEndpointMock = new();
+        Handler = new RegisterToWebinarCommandHandler(_publishEndpointMock.Object, UnitOfWorkMock.Object);
     }
 
     [Theory]

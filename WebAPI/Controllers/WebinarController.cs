@@ -1,5 +1,6 @@
 ﻿using Application.Requests;
 using Asp.Versioning;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -38,12 +39,18 @@ public class WebinarController : ControllerBase
         return result;
     }
 
-    [HttpPatch]
+    [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RegisterToWebinarAsync(RegisterWebinarRequest request)
+    public async Task<IActionResult> RegisterToWebinarAsync(string id, Person personRequest)
     {
+        var request = new RegisterWebinarRequest
+        {
+            WebinarId = id,
+            Person = personRequest
+        };
+        
         var result = await _mediator.Send(request);
         
         return result;

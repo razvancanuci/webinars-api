@@ -4,8 +4,11 @@ using Asp.Versioning;
 using Azure.Identity;
 using AzureStorage;
 using DataAccess;
+using Domain.Dtos;
 using Domain.Settings;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using StackExchange.Redis;
@@ -52,10 +55,29 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("Storage"));
+builder.Services.Configure<AzureServiceBusSettings>(builder.Configuration.GetSection("ServiceBus"));
 
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+    
+    x.AddConfigureEndpointsCallback((name, cfg) =>
+    {
+        cfg.UseMessageRetry(r => r.Immediate(2));
+    });
+    
+    x.UsingAzureServiceBus((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration["ServiceBus:ConnectionString"]);
+        cfg.Message<SendEmailDto>(
+            x => x.SetEntityName("send-email-registration-queue"));
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration["Redis:ConnectionString"] ?? string.Empty)
