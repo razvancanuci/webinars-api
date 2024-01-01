@@ -1,10 +1,7 @@
-﻿using DataAccess;
+﻿using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace IntegrationTests;
 
@@ -15,7 +12,10 @@ public class CustomWebApplicationFactory: WebApplicationFactory<Program>
         builder.ConfigureAppConfiguration((context, builder) =>
         {
             builder.AddJsonFile("appsettings.integrationTests.json");
-            builder.AddUserSecrets<Program>();
+        })
+        .ConfigureServices((context, services) =>
+        {
+            services.AddMassTransitTestHarness();
         });
     }
 }

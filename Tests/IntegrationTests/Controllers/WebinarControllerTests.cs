@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using Application.Requests;
+using AutoFixture.Xunit2;
 using Azure.Storage.Blobs;
 using DataAccess;
 using Domain.Entities;
@@ -14,6 +15,7 @@ namespace IntegrationTests.Controllers;
 public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>, IAsyncLifetime
 {
     private readonly CustomWebApplicationFactory _factory;
+
     public WebinarControllerTests(CustomWebApplicationFactory factory)
     {
         _factory = factory;
@@ -26,24 +28,24 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         // Arrange
         var httpClient = _factory.CreateClient();
-        
+
         // Act
         var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar/{webinarId}");
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
-    
+
     [Theory]
     [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5862", "1.0")]
     public async Task GetWebinarById_Returns_StatusCodeNotFound(string webinarId, string apiVersion)
     {
         // Arrange
         var httpClient = _factory.CreateClient();
-        
+
         // Act
         var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar/{webinarId}");
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -54,10 +56,10 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         // Arrange
         var httpClient = _factory.CreateClient();
-        
+
         // Act
         var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar?page={page}");
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
@@ -75,44 +77,42 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
         var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
-        
+
         // Act
         var response = await httpClient.PostAsJsonAsync(
             $"/api/v{apiVersion}/Webinar?Title={request.Title}&Description={request.Description}&Host={request.Host}&DateScheduled={request.DateScheduled}",
             request);
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
-    
-    [Fact]
-    public async Task RegisterToWebinar_Returns_StatusCodeNotFound()
+
+    [Theory]
+    [InlineData("1", "1.0")]
+    [InlineData("2", "1.0")]
+    public async Task RegisterToWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion )
     {
         // Arrange
-        var webinarRegistration = new RegisterWebinarRequest
+        var webinarRegistration = new Person
         {
-            WebinarId = "1",
-            Person = new Person
-            {
-                Email = "a@a.a",
-                Name = "aaaaa",
-            }
+            Email = "a@a.a",
+            Name = "aaaaa",
         };
-        var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
-        
+
         // Act
-        var response = await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/Webinar", webinarRegistration);
+        var response =
+            await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/Webinar/{webinarId}", webinarRegistration);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     public async Task InitializeAsync()
     {
         using var sp = _factory.Services.CreateScope();
         var dbContext = sp.ServiceProvider.GetRequiredService<WebinarContext>();
-        
+
         await dbContext.Database.EnsureCreatedAsync();
         DatabaseSeed.InitializeDbForTests(dbContext);
     }
@@ -122,10 +122,9 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         using var sp = _factory.Services.CreateScope();
         var dbContext = sp.ServiceProvider.GetRequiredService<WebinarContext>();
         var blobSettings = sp.ServiceProvider.GetRequiredService<IOptions<AzureStorageSettings>>().Value;
-        
+
         await dbContext.Database.EnsureDeletedAsync();
         await DeleteContainer(blobSettings);
-        
     }
 
     private async Task DeleteContainer(AzureStorageSettings settings)
