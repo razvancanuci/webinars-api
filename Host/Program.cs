@@ -7,9 +7,11 @@ using DataAccess;
 using Domain.Dtos;
 using Domain.Settings;
 using MassTransit;
+using MassTransit.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using StackExchange.Redis;
 using WebAPI.Handlers;
@@ -74,7 +76,10 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host(builder.Configuration["ServiceBus:ConnectionString"]);
         cfg.Message<SendEmailRegistrationDto>(
-            x => x.SetEntityName("send-emails-topic"));
+            x =>
+            {
+                x.SetEntityName(builder.Configuration["ServiceBus:SendEmailTopicName"] ?? string.Empty);
+            });
         cfg.ConfigureEndpoints(context);
     });
 });
@@ -100,7 +105,15 @@ builder.Services.AddHealthChecks()
     .AddAzureBlobStorage(
         builder.Configuration["Storage:ConnectionString"] ?? string.Empty,
         builder.Configuration["Storage:ContainerName"] ?? string.Empty
-    );
+    ).AddAzureServiceBusTopic(sp =>
+    {
+        var settings = sp.GetRequiredService<IOptions<AzureServiceBusSettings>>().Value;
+        return settings.ConnectionString;
+    }, sp =>
+    {
+        var settings = sp.GetRequiredService<IOptions<AzureServiceBusSettings>>().Value;
+        return settings.SendEmailTopicName;
+    });
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
