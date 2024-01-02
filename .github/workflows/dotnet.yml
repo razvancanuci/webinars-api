@@ -10,7 +10,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  run-pipeline:
     runs-on: ubuntu-latest
 
     steps:
