@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Domain.Constants;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
@@ -14,8 +15,14 @@ public class WebinarContext : DbContext
     {
         modelBuilder.Entity<Webinar>().ToContainer("Webinars");
 
-        modelBuilder.Entity<Webinar>().Property(x => x.Id).HasValueGenerator<StringValueGenerator>();
-        modelBuilder.Entity<Webinar>().HasPartitionKey(x => x.Host);
+        modelBuilder.Entity<Webinar>().Property(x => x.Id)
+            .HasValueGenerator<StringValueGenerator>();
+        
+        modelBuilder.Entity<Webinar>()
+            .HasPartitionKey(x => x.Host);
+        
+        modelBuilder.Entity<Webinar>()
+            .HasQueryFilter(w => w.ScheduleDate > DateTimeConstants.AvailabilityDate);
 
         modelBuilder.Entity<Webinar>().HasKey(x => x.Id);
         modelBuilder.Entity<Webinar>().Property(x => x.Host).IsRequired();
