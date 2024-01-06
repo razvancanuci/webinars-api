@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Net.Mime;
+using System.Text;
 using Application.Requests;
 using AutoFixture.Xunit2;
 using Azure.Storage.Blobs;
@@ -68,21 +70,30 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task AddWebinar_Returns_StatusCodeCreated()
     {
         // Arrange
-        var request = new NewWebinarRequest
+        var requestData = new NewWebinarRequest
         {
             Title = "title",
             Host = "host",
             Description = "This is the Description",
             DateScheduled = DateTime.UtcNow.AddDays(7),
         };
+        
         var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
-
+        
+        var stringDate = $"{requestData.DateScheduled.Month}/{requestData.DateScheduled.Day}/{requestData.DateScheduled.Year}";
+        var requestContent = new MultipartFormDataContent();
+        requestContent.Add(new StringContent(requestData.Title, Encoding.UTF8, MediaTypeNames.Text.Plain), "Title");
+        requestContent.Add(new StringContent(requestData.Description, Encoding.UTF8, MediaTypeNames.Text.Plain), "Description");
+        requestContent.Add(new StringContent(requestData.Host, Encoding.UTF8, MediaTypeNames.Text.Plain), "Host");
+        requestContent.Add(new StringContent(stringDate, Encoding.UTF8, MediaTypeNames.Text.Plain), "DateScheduled");
+        requestContent.Add(new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Text.Plain), "Image");
+        
         // Act
-        var response = await httpClient.PostAsJsonAsync(
-            $"/api/v{apiVersion}/Webinar?Title={request.Title}&Description={request.Description}&Host={request.Host}&DateScheduled={request.DateScheduled}",
-            request);
-
+        var response = await httpClient.PostAsync(
+            $"/api/v{apiVersion}/Webinar",
+            requestContent);
+        
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
