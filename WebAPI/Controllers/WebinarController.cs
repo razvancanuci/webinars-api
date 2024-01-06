@@ -59,7 +59,7 @@ public class WebinarController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddWebinarAsync(NewWebinarRequest request)
+    public async Task<IActionResult> AddWebinarAsync([FromForm] NewWebinarRequest request)
     {
         var result = await _mediator.Send(request);
         
