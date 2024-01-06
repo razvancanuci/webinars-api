@@ -31,23 +31,9 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<N
         
         if (request.Image is not null)
         {
-            await UploadImageAsync(webinar, request.Image);
+            await _fileStorage.CreateAsync(webinar.Id, request.Image);
         }
         
         return new CreatedResult("AddWebinar", request);
-    }
-
-    private async Task UploadImageAsync(Webinar webinar, IFormFile image)
-    {
-        var webinars = await UnitOfWork.WebinarRepository.GetAsync(w => 
-            w.Title == webinar.Title &&
-            w.Description == webinar.Description &&
-            w.Host == webinar.Host && 
-            w.ScheduleDate == webinar.ScheduleDate);
-
-        webinar = webinars.First();
-        var imageUrl = webinar.Id;
-
-        await _fileStorage.CreateAsync(imageUrl, image);
     }
 }

@@ -76,7 +76,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             It.IsAny<string>(),
             It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
             It.IsAny<TimeSpan>()
-        )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow}});
+        )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow.AddDays(8)}});
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
