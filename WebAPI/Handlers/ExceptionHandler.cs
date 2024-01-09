@@ -23,6 +23,7 @@ public class ExceptionHandler : IExceptionHandler
         {
             Status = internalServerErrorStatusCode,
             Title = exception.GetType().FullName,
+            Detail = exception.Message
         };
 
         httpContext.Response.StatusCode = internalServerErrorStatusCode;
