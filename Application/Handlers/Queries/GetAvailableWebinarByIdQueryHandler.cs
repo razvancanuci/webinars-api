@@ -12,11 +12,13 @@ namespace Application.Handlers.Queries;
 public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestHandler<AvailableWebinarByIdRequest, IActionResult>
 {
     private readonly ICacheService _cacheService;
+    private readonly IFileStorage _fileStorage;
 
-    public GetAvailableWebinarByIdQueryHandler(ICacheService cacheService, IUnitOfWork unitOfWork) 
+    public GetAvailableWebinarByIdQueryHandler(ICacheService cacheService, IFileStorage fileStorage, IUnitOfWork unitOfWork) 
         : base(unitOfWork)
     {
         _cacheService = cacheService;
+        _fileStorage = fileStorage;
     }
     public async Task<IActionResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
@@ -40,13 +42,11 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestH
         {
             return new NotFoundObjectResult("The id was not found");
         }
-
-        if (!result.IsAvailable())
-        {
-            return new BadRequestObjectResult("The webinar registrations were finished");
-        }
-
+        
+        var image = await _fileStorage.GetAsync(result.Id);
+        
         var mappedResult = result.Adapt<WebinarInfoDto>();
+        mappedResult.ImageUri = image;
 
         return new OkObjectResult(mappedResult);
     }

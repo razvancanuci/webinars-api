@@ -4,6 +4,6 @@ namespace Domain.Interfaces;
 
 public interface IFileStorage
 {
-    Task<Stream> GetAsync(string path);
+    Task<Uri?> GetAsync(string path);
     Task CreateAsync(string path, IFormFile content);
 }

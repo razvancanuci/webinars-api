@@ -15,22 +15,20 @@ public class AzureBlobStorage : IFileStorage
         _settings = settings.Value;
     }
 
-    public async Task<Stream> GetAsync(string path)
+    public async Task<Uri?> GetAsync(string path)
     {
         var container = await GetContainerClientAsync();
 
-        var blob = container.GetBlobClient(path);
-        var blobExists = await blob.ExistsAsync();
-
-        if (!blobExists)
+        var blob = container.GetBlobs(prefix: path).FirstOrDefault();
+        
+        if (blob is null)
         {
-            throw new InfrastructureException($"Blob with path {path} is not in the blobs");
+            return default;
         }
+        
+        var blobContent = container.GetBlobClient(blob.Name);
 
-        var download = await blob.DownloadAsync();
-        var stream = download.Value.Content;
-
-        return stream;
+        return blobContent.Uri;
     }
 
     public async Task CreateAsync(string path, IFormFile blob)
