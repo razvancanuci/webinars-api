@@ -7,9 +7,7 @@ using DataAccess;
 using Domain.Dtos;
 using Domain.Settings;
 using MassTransit;
-using MassTransit.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
@@ -124,6 +122,7 @@ builder.Services.AddApplicationServices()
     .AddDataAccess()
     .AddAzureBlobStorage();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers();
 
 builder.Services.AddMvc();
