@@ -26,7 +26,14 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection RegisterMapsterConfiguration(this IServiceCollection services)
     {
         TypeAdapterConfig<Webinar, WebinarShortInfoDto>.NewConfig();
-        TypeAdapterConfig<Webinar, WebinarInfoDto>.NewConfig();
+        TypeAdapterConfig<Webinar, WebinarInfoDto>
+            .NewConfig()
+            .MapWith(src => new WebinarInfoDto{
+                Title = src.Title,
+                Host = src.Host,
+                Description = src.Description,
+                ScheduleDate = src.ScheduleDate
+            });
         return services;
     }
 

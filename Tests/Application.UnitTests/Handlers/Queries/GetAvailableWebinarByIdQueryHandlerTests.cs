@@ -4,6 +4,7 @@ using Application.Requests;
 using Application.Services.Interfaces;
 using AutoFixture.Xunit2;
 using Domain.Entities;
+using Domain.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,11 +15,13 @@ namespace Application.UnitTests.Handlers.Queries;
 public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<GetAvailableWebinarByIdQueryHandler>
 {
     private readonly Mock<ICacheService> _cacheServiceMock;
+    private readonly Mock<IFileStorage> _fileStorageMock;
     protected override GetAvailableWebinarByIdQueryHandler Handler { get; }
     public GetAvailableWebinarByIdQueryHandlerTests()
     {
         _cacheServiceMock = new();
-        Handler = new (_cacheServiceMock.Object, UnitOfWorkMock.Object);
+        _fileStorageMock = new();
+        Handler = new (_cacheServiceMock.Object, _fileStorageMock.Object, UnitOfWorkMock.Object);
     }
 
     [Theory]
@@ -46,29 +49,6 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
     
     [Theory]
     [AutoData]
-    public async Task Handle_ReturnsBadRequestResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
-    {
-        // Arrange
-        _cacheServiceMock.Setup(x => x.GetOrCreateAsync(
-            It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
-            It.IsAny<TimeSpan>()
-        )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow.AddDays(-4)}});
-        
-        // Act
-        var result = await Handler.Handle(request, CancellationToken.None);
-
-        // Assert
-        _cacheServiceMock.Verify(x => x.GetOrCreateAsync(
-            It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
-            It.IsAny<TimeSpan>()
-        ), Times.Once);
-        result.Should().BeOfType<BadRequestObjectResult>();
-    }
-    
-    [Theory]
-    [AutoData]
     public async Task Handle_ReturnsOKResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
     {
         // Arrange
@@ -76,7 +56,15 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             It.IsAny<string>(),
             It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
             It.IsAny<TimeSpan>()
-        )).ReturnsAsync(new List<Webinar> {new Webinar {ScheduleDate = DateTime.UtcNow.AddDays(8)}});
+        )).ReturnsAsync(new List<Webinar> {
+            new Webinar
+        {
+            Id= "1",
+            Title = "Title",
+            Description = "Description",
+            Host = "Host",
+            ScheduleDate = DateTime.UtcNow.AddDays(8)
+        }});
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);

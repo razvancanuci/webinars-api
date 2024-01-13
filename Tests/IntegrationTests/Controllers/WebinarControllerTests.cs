@@ -32,7 +32,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         var httpClient = _factory.CreateClient();
 
         // Act
-        var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar/{webinarId}");
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/webinar/{webinarId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -46,7 +46,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         var httpClient = _factory.CreateClient();
 
         // Act
-        var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar/{webinarId}");
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/webinar/{webinarId}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -60,7 +60,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         var httpClient = _factory.CreateClient();
 
         // Act
-        var response = await httpClient.GetAsync($"/api/v{apiVersion}/Webinar?page={page}");
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/webinar?page={page}");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -91,7 +91,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         
         // Act
         var response = await httpClient.PostAsync(
-            $"/api/v{apiVersion}/Webinar",
+            $"/api/v{apiVersion}/webinar",
             requestContent);
         
         // Assert
@@ -113,7 +113,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Act
         var response =
-            await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/Webinar/{webinarId}", webinarRegistration);
+            await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/webinar/{webinarId}", webinarRegistration);
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

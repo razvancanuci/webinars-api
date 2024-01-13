@@ -16,7 +16,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
     public async Task<IActionResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
         var result = await UnitOfWork.WebinarRepository
-            .GetAsync(entity => entity.ScheduleDate > DateTimeConstants.AvailabilityDate,
+            .GetAsync(entity => entity.ScheduleDate > WebinarConstants.AvailabilityDate,
                 query => query.OrderBy(x => x.ScheduleDate)
                     .Skip((request.Page - 1) * request.ItemsPerPage)
                     .Take(request.ItemsPerPage)

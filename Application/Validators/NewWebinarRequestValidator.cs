@@ -1,4 +1,5 @@
 ﻿using Application.Requests;
+using Domain.Constants;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
@@ -6,7 +7,6 @@ namespace Application.Validators;
 
 public class NewWebinarRequestValidator : AbstractValidator<NewWebinarRequest>
 {
-    private static readonly List<string> AcceptedImageExtensions = [".png", ".jpg"];
     public NewWebinarRequestValidator()
     {
         RuleForTitle();
@@ -65,6 +65,6 @@ public class NewWebinarRequestValidator : AbstractValidator<NewWebinarRequest>
             return true;
         }
 
-        return AcceptedImageExtensions.Exists(x => image.FileName.EndsWith(x));
+        return WebinarConstants.AcceptedImageExtensions.Exists(x => image.FileName.EndsWith(x));
     }
 }

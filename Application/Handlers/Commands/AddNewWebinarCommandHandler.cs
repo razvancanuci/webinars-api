@@ -1,4 +1,5 @@
 ﻿using Application.Requests;
+using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
@@ -31,7 +32,9 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<N
         
         if (request.Image is not null)
         {
-            await _fileStorage.CreateAsync(webinar.Id, request.Image);
+            var extension = WebinarConstants.AcceptedImageExtensions.First(x => request.Image.FileName.EndsWith(x));
+            
+            await _fileStorage.CreateAsync($"{webinar.Id}{extension}", request.Image);
         }
         
         return new CreatedResult("AddWebinar", request);
