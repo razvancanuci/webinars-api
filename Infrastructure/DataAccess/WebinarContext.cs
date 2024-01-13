@@ -22,7 +22,7 @@ public class WebinarContext : DbContext
             .HasPartitionKey(x => x.Host);
         
         modelBuilder.Entity<Webinar>()
-            .HasQueryFilter(w => w.ScheduleDate > DateTimeConstants.AvailabilityDate);
+            .HasQueryFilter(w => w.ScheduleDate > WebinarConstants.AvailabilityDate);
 
         modelBuilder.Entity<Webinar>().HasKey(x => x.Id);
         modelBuilder.Entity<Webinar>().Property(x => x.Host).IsRequired();
