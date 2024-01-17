@@ -76,14 +76,14 @@ builder.Services.AddMassTransit(x =>
         cfg.Message<SendEmailRegistrationDto>(
             x =>
             {
-                x.SetEntityName(builder.Configuration["ServiceBus:SendEmailTopicName"] ?? string.Empty);
+                x.SetEntityName(builder.Configuration["ServiceBus:SendEmailTopicName"]!);
             });
         cfg.ConfigureEndpoints(context);
     });
 });
 
 builder.Services.AddHealthChecks()
-    .AddRedis(builder.Configuration["Redis:ConnectionString"] ?? string.Empty)
+    .AddRedis(builder.Configuration["Redis:ConnectionString"]!)
     .AddDbContextCheck<WebinarContext>(
         "cosmosDbHealthCheck",
         HealthStatus.Unhealthy,
@@ -101,8 +101,8 @@ builder.Services.AddHealthChecks()
             return true;
         })
     .AddAzureBlobStorage(
-        builder.Configuration["Storage:ConnectionString"] ?? string.Empty,
-        builder.Configuration["Storage:ContainerName"] ?? string.Empty
+        builder.Configuration["Storage:ConnectionString"]!,
+        builder.Configuration["Storage:ContainerName"]!
     ).AddAzureServiceBusTopic(sp =>
     {
         var settings = sp.GetRequiredService<IOptions<AzureServiceBusSettings>>().Value;
@@ -115,7 +115,7 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddApplicationInsightsTelemetry(options =>
 {
-    options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"] ?? string.Empty;
+    options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"]!;
 });
 
 builder.Services.AddApplicationServices()
