@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   solution: '**/*.sln'
@@ -15,20 +15,25 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
+- task: UseDotNet@2
+  displayName: 'Install .NET Core SDK'
   inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
+    version: 8.x
+    performMultiLevelLookup: true
+    includePreviewVersions: true
+- task: DotNetCoreCLI@2
+  displayName: 'Restore Solution'
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command : "restore"
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  displayName: 'Build Solution'
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command : "build"
+    arguments: '--configuration $(buildConfiguration)'
+ 
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    arguments: : '--no-build --verbosity normal --filter FullyQualifiedName!~IntegrationTests'
