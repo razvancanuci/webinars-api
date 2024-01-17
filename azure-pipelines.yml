@@ -32,8 +32,4 @@ steps:
     command : "build"
     arguments: '--configuration $(buildConfiguration)'
  
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'test'
-    arguments: : '--no-build --verbosity normal --filter FullyQualifiedName!~IntegrationTests'
+- script: 'dotnet test --no-build --verbosity normal --filter FullyQualifiedName!~IntegrationTests '
