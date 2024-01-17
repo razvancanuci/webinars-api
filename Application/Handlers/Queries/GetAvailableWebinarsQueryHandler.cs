@@ -1,4 +1,5 @@
-﻿using Application.Requests;
+﻿using Application.Extensions;
+using Application.Requests;
 using Domain.Constants;
 using Domain.Dtos;
 using Domain.Entities;
@@ -18,8 +19,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHand
         var result = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.ScheduleDate > WebinarConstants.AvailabilityDate,
                 query => query.OrderBy(x => x.ScheduleDate)
-                    .Skip((request.Page - 1) * request.ItemsPerPage)
-                    .Take(request.ItemsPerPage)
+                    .PageBy(request)
                     .Select(w => new Webinar
                     {
                         Id = w.Id,
