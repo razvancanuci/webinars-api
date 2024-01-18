@@ -35,6 +35,6 @@ steps:
   displayName: 'Run UnitTests'
   inputs:
     command: 'test'
-    arguments: '--no-build --verbosity normal --filter FullyQualifiedName!~IntegrationTests'
+    arguments: '--no-build --verbosity normal --configuration $(buildConfiguration) --filter FullyQualifiedName!~IntegrationTests'
     publishTestResults: false
  
