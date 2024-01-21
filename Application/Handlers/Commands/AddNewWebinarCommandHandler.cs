@@ -1,14 +1,13 @@
-﻿using Application.Requests;
+﻿using Application.Handlers.Interfaces;
+using Application.Requests;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Commands;
 
-public class AddNewWebinarCommandHandler : RequestHandlerBase, IRequestHandler<NewWebinarRequest, IActionResult>
+public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<NewWebinarRequest>
 {
     private readonly IFileStorage _fileStorage;
 

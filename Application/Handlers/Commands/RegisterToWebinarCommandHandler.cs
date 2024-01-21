@@ -1,13 +1,13 @@
-﻿using Application.Requests;
+﻿using Application.Handlers.Interfaces;
+using Application.Requests;
 using Domain.Dtos;
 using Domain.Interfaces;
 using MassTransit;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Commands;
 
-public class RegisterToWebinarCommandHandler : RequestHandlerBase, IRequestHandler<RegisterWebinarRequest, IActionResult>
+public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandler<RegisterWebinarRequest>
 {
     private readonly IPublishEndpoint _publishEndpoint;
 

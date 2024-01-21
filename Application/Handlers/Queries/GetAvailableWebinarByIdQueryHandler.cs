@@ -1,4 +1,5 @@
-﻿using Application.Requests;
+﻿using Application.Handlers.Interfaces;
+using Application.Requests;
 using Application.Services.Interfaces;
 using Domain.Dtos;
 using Domain.Entities;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Queries;
 
-public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IRequestHandler<AvailableWebinarByIdRequest, IActionResult>
+public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHandler<AvailableWebinarByIdRequest>
 {
     private readonly ICacheService _cacheService;
     private readonly IFileStorage _fileStorage;

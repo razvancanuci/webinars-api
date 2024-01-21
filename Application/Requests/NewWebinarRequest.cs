@@ -1,11 +1,10 @@
-﻿using MediatR;
+﻿using Application.Requests.Interfaces;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Requests;
 
 #nullable disable
-public class NewWebinarRequest : IRequest<IActionResult>
+public class NewWebinarRequest : ICommandRequest
 {
     public string Title { get; set; }
     public string Description { get; set; }
