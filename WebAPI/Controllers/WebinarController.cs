@@ -12,10 +12,10 @@ namespace WebAPI.Controllers;
 [ApiVersion("1.0")]
 public class WebinarController : ControllerBase
 {
-    private readonly IMediator _mediator;
-    public WebinarController(IMediator mediator)
+    private readonly ISender _sender;
+    public WebinarController(ISender sender)
     {
-        _mediator = mediator;
+        _sender = sender;
     }
 
     [HttpGet]
@@ -23,7 +23,7 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> GetAvailableWebinarsAsync(int page)
     {
         var availableWebinarsRequest = new AvailableWebinarsRequest { Page = page };
-        var result = await _mediator.Send(availableWebinarsRequest);
+        var result = await _sender.Send(availableWebinarsRequest);
         
         return result;
     }
@@ -34,7 +34,7 @@ public class WebinarController : ControllerBase
     public async Task<IActionResult> GetAvailableWebinarByIdAsync(string id)
     {
         var webinarByIdRequest = new AvailableWebinarByIdRequest(id);
-        var result = await _mediator.Send(webinarByIdRequest);
+        var result = await _sender.Send(webinarByIdRequest);
         
         return result;
     }
@@ -51,7 +51,7 @@ public class WebinarController : ControllerBase
             Person = personRequest
         };
         
-        var result = await _mediator.Send(request);
+        var result = await _sender.Send(request);
         
         return result;
     }
@@ -61,7 +61,7 @@ public class WebinarController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddWebinarAsync([FromForm] NewWebinarRequest request)
     {
-        var result = await _mediator.Send(request);
+        var result = await _sender.Send(request);
         
         return result;
     }

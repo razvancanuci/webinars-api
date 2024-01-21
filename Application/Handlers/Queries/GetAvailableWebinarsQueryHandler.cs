@@ -1,4 +1,5 @@
 ﻿using Application.Extensions;
+using Application.Handlers.Interfaces;
 using Application.Requests;
 using Domain.Constants;
 using Domain.Dtos;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Queries;
 
-public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IRequestHandler<AvailableWebinarsRequest, IActionResult>
+public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandler<AvailableWebinarsRequest>
 {
     public GetAvailableWebinarsQueryHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
