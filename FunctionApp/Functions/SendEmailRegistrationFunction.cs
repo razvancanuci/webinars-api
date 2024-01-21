@@ -23,12 +23,12 @@ public class SendEmailRegistrationFunction
         "send-email-registration-subscription",
         Connection = "ServiceBus:ConnectionString")] ServiceBusReceivedMessage message)
     {
-        var emailDto = JsonConvert.DeserializeObject<SendEmailRegistrationModel>(Encoding.UTF8.GetString(message.Body))?.Message;
+        var emailMessage = JsonConvert.DeserializeObject<MessageModel<EmailRegistrationMessage>>(Encoding.UTF8.GetString(message.Body))?.Message;
         
-        _logger.LogInformation("Name {name}",emailDto?.Name);
-        _logger.LogInformation("Email {email}",emailDto?.Email);
-        _logger.LogInformation("Title {title}",emailDto?.WebinarTitle);
-        _logger.LogInformation("Host {host}",emailDto?.WebinarHost);
+        _logger.LogInformation("Name {name}",emailMessage!.Name);
+        _logger.LogInformation("Email {email}",emailMessage.Email);
+        _logger.LogInformation("Title {title}",emailMessage.WebinarTitle);
+        _logger.LogInformation("Host {host}",emailMessage.WebinarHost);
         
     }
 }

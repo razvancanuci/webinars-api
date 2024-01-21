@@ -32,18 +32,19 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         webinar.PeopleRegistered.Add(request.Person);
         await UnitOfWork.SaveAsync();
 
-        var sendEmailDto = new SendEmailRegistrationDto(
-            request.Person.Name,
-            request.Person.Email,
-            webinar.Title,
-            webinar.Host);
 
-        await SendEmail(sendEmailDto);
+        var message = new EmailRegistrationMessage(
+            request.Person.Name,
+                request.Person.Email,
+                webinar.Title,
+                webinar.Host);
+
+        await SendEmail(message);
         
         return new NoContentResult();
     }
 
-    private async Task SendEmail(SendEmailRegistrationDto emailDto)
+    private async Task SendEmail(EmailRegistrationMessage emailDto)
     {
         await _publishEndpoint.Publish(emailDto);
     }
