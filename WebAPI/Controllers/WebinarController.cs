@@ -65,4 +65,16 @@ public class WebinarController : ControllerBase
         
         return result;
     }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CancelWebinarAsync(string id)
+    {
+        var request = new CancelWebinarRequest(id);
+
+        var result = await _sender.Send(request);
+
+        return result;
+    }
 }
