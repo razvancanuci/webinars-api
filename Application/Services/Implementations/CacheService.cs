@@ -14,6 +14,11 @@ public class CacheService : ICacheService
         _cache = multiplexer.GetDatabase();
     }
 
+    public async Task DeleteKeyAsync(string key)
+    {
+        await _cache.KeyDeleteAsync(key);
+    }
+    
     public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> dbQuery, TimeSpan? expiration = null)
     {
         var json = await _cache.StringGetAsync(key);

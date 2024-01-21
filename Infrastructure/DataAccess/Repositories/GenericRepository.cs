@@ -28,6 +28,11 @@ where TEntity : Entity
        await DbSet.AddAsync(entity);
     }
 
+    public void Delete(TEntity entity)
+    {
+        DbSet.Remove(entity);
+    }
+
     private IQueryable<TEntity> GetQuery(Expression<Func<TEntity, bool>> criteria, Func<IQueryable<TEntity>, IQueryable<TEntity>>? additionalQuery, bool asNoTracking)
     {
         var initialQuery = DbSet;

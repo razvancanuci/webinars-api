@@ -1,9 +1,10 @@
-﻿using Application.Requests.Interfaces;
+﻿using Application.Extensions;
+using Application.Requests.Interfaces;
 
 namespace Application.Requests;
 #nullable disable
-public record AvailableWebinarByIdRequest(string WebinarId) : IQueryRequest
+public sealed record AvailableWebinarByIdRequest(string WebinarId) : IQueryRequest
 {
-    public string Key => $"webinar-by-id-{WebinarId}";
+    public string Key => WebinarId.ToWebinarByIdCacheKey();
     public TimeSpan? Expiration => TimeSpan.FromHours(1);
 }
