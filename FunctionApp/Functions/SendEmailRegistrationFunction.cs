@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Azure.Messaging.ServiceBus;
-using Domain.Dtos;
+using Domain.Messages;
 using FunctionApp.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;

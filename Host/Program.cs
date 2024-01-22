@@ -4,7 +4,7 @@ using Asp.Versioning;
 using Azure.Identity;
 using AzureStorage;
 using DataAccess;
-using Domain.Dtos;
+using Domain.Messages;
 using Domain.Settings;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;

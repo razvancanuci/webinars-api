@@ -1,4 +1,4 @@
-﻿using Domain.Dtos;
+﻿using Domain.Messages.Interfaces;
 
 namespace FunctionApp.Models;
 

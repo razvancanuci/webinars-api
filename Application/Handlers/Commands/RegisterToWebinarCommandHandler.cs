@@ -1,20 +1,20 @@
 ﻿using Application.Handlers.Interfaces;
 using Application.Requests;
-using Domain.Dtos;
+using Application.Services.Interfaces;
 using Domain.Interfaces;
-using MassTransit;
+using Domain.Messages;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Handlers.Commands;
 
 public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandler<RegisterWebinarRequest>
 {
-    private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IMessageService _messageService;
 
-    public RegisterToWebinarCommandHandler(IPublishEndpoint publishEndpoint, IUnitOfWork unitOfWork)
+    public RegisterToWebinarCommandHandler(IMessageService messageService, IUnitOfWork unitOfWork)
         : base(unitOfWork)
     {
-        _publishEndpoint = publishEndpoint;
+        _messageService = messageService;
     }
     
     public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
@@ -44,8 +44,8 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         return new NoContentResult();
     }
 
-    private async Task SendEmail(EmailRegistrationMessage emailDto)
+    private async Task SendEmail(EmailRegistrationMessage message)
     {
-        await _publishEndpoint.Publish(emailDto);
+        await _messageService.Send(message);
     }
 }

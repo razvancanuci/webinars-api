@@ -1,4 +1,6 @@
-﻿namespace Domain.Dtos;
+﻿using Domain.Messages.Interfaces;
+
+namespace Domain.Messages;
 
 public sealed record EmailRegistrationMessage(
     string Name,

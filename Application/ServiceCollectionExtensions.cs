@@ -19,7 +19,9 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAvailableWebinarsQueryHandler).Assembly));
         services.RegisterMapsterConfiguration();
         services.AddFluentValidation();
-        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<ICacheService, CacheService>()
+        .AddScoped<IMessageService, MessageService>();
+        
         return services;
     }
     

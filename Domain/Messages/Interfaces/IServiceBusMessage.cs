@@ -1,3 +1,3 @@
-﻿namespace Domain.Dtos;
+﻿namespace Domain.Messages.Interfaces;
 
 public interface IServiceBusMessage;
