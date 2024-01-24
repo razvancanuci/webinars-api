@@ -1,34 +1,34 @@
 ﻿using Application.Services.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using StackExchange.Redis;
 
 namespace Application.Services.Implementations;
 
 public class CacheService : ICacheService
 {
     private static readonly TimeSpan DefaultExpiration = TimeSpan.FromMinutes(10);
-    private readonly IDatabase _cache;
+    private readonly IDistributedCache _cache;
 
-    public CacheService(IConnectionMultiplexer multiplexer)
+    public CacheService(IDistributedCache cache)
     {
-        _cache = multiplexer.GetDatabase();
+        _cache = cache;
     }
 
     public async Task DeleteKeyAsync(string key)
     {
-        await _cache.KeyDeleteAsync(key);
+        await _cache.RemoveAsync(key);
     }
     
     public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> dbQuery, TimeSpan? expiration = null)
     {
-        var json = await _cache.StringGetAsync(key);
+        var json = await _cache.GetStringAsync(key);
         
-        if (json.IsNullOrEmpty)
+        if (string.IsNullOrEmpty(json))
         {
             return await ExecuteQuery(key, dbQuery, expiration ?? DefaultExpiration);
         }
         
-        var result = JsonConvert.DeserializeObject<T>(json.ToString());
+        var result = JsonConvert.DeserializeObject<T>(json);
         return result;
     }
 
@@ -37,7 +37,14 @@ public class CacheService : ICacheService
         var queryResult = await dbQuery();
             
         var cache = JsonConvert.SerializeObject(queryResult);
-        await _cache.StringSetAsync(key, cache, expiration);
+        
+        await _cache.SetStringAsync(
+            key, 
+            cache, 
+            new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = expiration
+            });
             
         return queryResult;
     }

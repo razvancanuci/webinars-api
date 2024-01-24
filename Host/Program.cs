@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using StackExchange.Redis;
 using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,7 +50,11 @@ builder.Services.AddRateLimiter(options =>
                 Window = TimeSpan.FromMinutes(1)
             }));
 });
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration["Redis:ConnectionString"] ?? string.Empty));
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+});
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("Storage"));
