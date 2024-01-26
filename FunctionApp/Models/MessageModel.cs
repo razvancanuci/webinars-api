@@ -1,9 +1,7 @@
-﻿using Domain.Messages.Interfaces;
-
-namespace FunctionApp.Models;
+﻿namespace FunctionApp.Models;
 
 public class MessageModel<T> 
-where T: IServiceBusMessage
+where T: class
 {
     public T Message { get; set; }
 }
