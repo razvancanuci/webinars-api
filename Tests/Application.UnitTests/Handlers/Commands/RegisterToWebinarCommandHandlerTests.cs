@@ -3,6 +3,7 @@ using Application.Handlers.Commands;
 using Application.Requests;
 using Application.Services.Implementations;
 using Application.Services.Interfaces;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using Domain.Entities;
 using FluentAssertions;
@@ -14,13 +15,11 @@ namespace Application.UnitTests.Handlers.Commands;
 
 public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<RegisterToWebinarCommandHandler>
 {
-    private readonly Mock<IMessageService> _messageServiceMock;
     protected override RegisterToWebinarCommandHandler Handler { get; }
     
     public RegisterToWebinarCommandHandlerTests()
     {
-        _messageServiceMock = new();
-        Handler = new RegisterToWebinarCommandHandler(_messageServiceMock.Object, UnitOfWorkMock.Object);
+        Handler = Fixture.Create<RegisterToWebinarCommandHandler>();
     }
 
     [Theory]

@@ -1,5 +1,6 @@
 ﻿using Application.Handlers.Queries;
 using Application.Requests;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ public class GetAvailableWebinarsQueryHandlerTests : RequestHandlerTestsBase<Get
 
     public GetAvailableWebinarsQueryHandlerTests()
     {
-        Handler = new GetAvailableWebinarsQueryHandler(UnitOfWorkMock.Object);
+        Handler = Fixture.Create<GetAvailableWebinarsQueryHandler>();
     }
 
     [Theory]

@@ -1,4 +1,6 @@
 ﻿using Application.Handlers;
+using AutoFixture;
+using AutoFixture.AutoMoq;
 using Domain.Entities;
 using Domain.Interfaces;
 using Moq;
@@ -12,11 +14,14 @@ where TRequest : RequestHandlerBase
     protected readonly Mock<IUnitOfWork> UnitOfWorkMock;
     protected abstract TRequest Handler { get; }
 
+    protected IFixture Fixture;
+
     protected RequestHandlerTestsBase()
     {
-        WebinarRepositoryMock = new();
+        Fixture = new Fixture().Customize(new AutoMoqCustomization());
+        WebinarRepositoryMock = Fixture.Freeze<Mock<IRepository<Webinar>>>();
         
-        UnitOfWorkMock = new();
+        UnitOfWorkMock = Fixture.Freeze<Mock<IUnitOfWork>>();
         UnitOfWorkMock.Setup(x => x.WebinarRepository).Returns(WebinarRepositoryMock.Object);
     }
 }

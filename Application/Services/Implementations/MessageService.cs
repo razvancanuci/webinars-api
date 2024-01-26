@@ -1,5 +1,4 @@
 ﻿using Application.Services.Interfaces;
-using Domain.Messages.Interfaces;
 using MassTransit;
 
 namespace Application.Services.Implementations;
@@ -13,7 +12,7 @@ public class MessageService : IMessageService
         _publisher = publisher;
     }
     
-    public async Task Send<T>(T message) where T : IServiceBusMessage
+    public async Task Send<T>(T message) where T : class
     {
         await _publisher.Publish(message);
     }
