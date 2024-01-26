@@ -2,6 +2,7 @@
 using Application.Handlers.Queries;
 using Application.Requests;
 using Application.Services.Interfaces;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -19,9 +20,13 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
     protected override GetAvailableWebinarByIdQueryHandler Handler { get; }
     public GetAvailableWebinarByIdQueryHandlerTests()
     {
-        _cacheServiceMock = new();
-        _fileStorageMock = new();
-        Handler = new (_cacheServiceMock.Object, _fileStorageMock.Object, UnitOfWorkMock.Object);
+        _cacheServiceMock = Fixture.Freeze<Mock<ICacheService>>();
+        _fileStorageMock = Fixture.Freeze<Mock<IFileStorage>>();
+
+        _fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>()))
+            .ReturnsAsync(default(Uri));
+        
+        Handler = Fixture.Create<GetAvailableWebinarByIdQueryHandler>();
     }
 
     [Theory]
@@ -63,7 +68,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             Title = "Title",
             Description = "Description",
             Host = "Host",
-            ScheduleDate = DateTime.UtcNow.AddDays(8)
+            ScheduleDate = DateTime.UtcNow.AddDays(8),
         }});
         
         // Act
