@@ -118,6 +118,37 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+    
+    [Theory]
+    [InlineData("1", "1.0")]
+    [InlineData("2", "1.0")]
+    public async Task CancelWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion )
+    {
+        // Arrange
+        var httpClient = _factory.CreateClient();
+
+        // Act
+        var response =
+            await httpClient.DeleteAsync($"/api/v{apiVersion}/webinar/{webinarId}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+    
+    [Theory]
+    [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5868", "1.0")]
+    public async Task CancelWebinar_Returns_StatusCodeCoContent(string webinarId, string apiVersion )
+    {
+        // Arrange
+        var httpClient = _factory.CreateClient();
+
+        // Act
+        var response =
+            await httpClient.DeleteAsync($"/api/v{apiVersion}/webinar/{webinarId}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
 
     public async Task InitializeAsync()
     {
