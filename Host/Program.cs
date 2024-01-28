@@ -7,10 +7,12 @@ using DataAccess;
 using Domain.Messages;
 using Domain.Settings;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
+using Microsoft.Identity.Web;
 using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -133,6 +135,17 @@ builder.Services.AddApplicationServices()
     .AddAzureBlobStorage();
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(options =>
+    {
+        builder.Configuration.Bind("AzureAdB2C", options);
+    },
+    options =>
+    {
+        builder.Configuration.Bind("AzureAdB2C", options);
+    });
+
 builder.Services.AddControllers();
 
 builder.Services.AddMvc();
@@ -151,6 +164,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.Services.AutoCreateDb();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors();
 app.UseHttpsRedirection();
