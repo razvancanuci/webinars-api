@@ -5,8 +5,7 @@ using Domain.Dtos;
 using Domain.Entities;
 using Domain.Interfaces;
 using Mapster;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Handlers.Queries;
 
@@ -21,7 +20,7 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
         _cacheService = cacheService;
         _fileStorage = fileStorage;
     }
-    public async Task<IActionResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
         var webinars = await _cacheService.GetOrCreateAsync(request.Key,
             () => UnitOfWork.WebinarRepository
@@ -41,7 +40,7 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
         
         if (result is null)
         {
-            return new NotFoundObjectResult("The id was not found");
+            return Results.NotFound("The id was not found");
         }
         
         var image = await _fileStorage.GetAsync(result.Id);
@@ -49,6 +48,6 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
         var mappedResult = result.Adapt<WebinarInfoDto>();
         mappedResult.ImageUri = image;
 
-        return new OkObjectResult(mappedResult);
+        return Results.Ok(mappedResult);
     }
 }

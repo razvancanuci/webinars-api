@@ -62,7 +62,7 @@ public class NewWebinarRequestValidator : AbstractValidator<NewWebinarRequest>
     {
         if (image is null)
         {
-            return true;
+            return false;
         }
 
         return WebinarConstants.AcceptedImageExtensions.Exists(x => image.FileName.EndsWith(x));

@@ -3,7 +3,7 @@ using Application.Requests;
 using Application.Services.Interfaces;
 using Domain.Interfaces;
 using Domain.Messages;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Handlers.Commands;
 
@@ -17,7 +17,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         _messageService = messageService;
     }
     
-    public async Task<IActionResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
         var webinarList = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.Id == request.WebinarId);
@@ -26,7 +26,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         
         if (webinar is null)
         {
-            return new NotFoundResult();
+            return Results.NotFound("The id was not found in the database");
         }
         
         webinar.PeopleRegistered.Add(request.Person);
@@ -41,7 +41,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
 
         await SendEmail(message);
         
-        return new NoContentResult();
+        return Results.NoContent();
     }
 
     private async Task SendEmail(EmailRegistrationMessage message)

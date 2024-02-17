@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Requests.Interfaces;
 
-public interface IQueryRequest : IRequest<IActionResult>
+public interface IQueryRequest : IRequest<IResult>
 {
 }

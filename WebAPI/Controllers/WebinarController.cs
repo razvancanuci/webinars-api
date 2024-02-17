@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+[Obsolete]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiVersion("1.0")]
@@ -20,7 +21,7 @@ public class WebinarController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAvailableWebinarsAsync(int page)
+    public async Task<IResult> GetAvailableWebinarsAsync(int page)
     {
         var availableWebinarsRequest = new AvailableWebinarsRequest { Page = page };
         var result = await _sender.Send(availableWebinarsRequest);
@@ -31,7 +32,7 @@ public class WebinarController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAvailableWebinarByIdAsync(string id)
+    public async Task<IResult> GetAvailableWebinarByIdAsync(string id)
     {
         var webinarByIdRequest = new AvailableWebinarByIdRequest(id);
         var result = await _sender.Send(webinarByIdRequest);
@@ -43,7 +44,7 @@ public class WebinarController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> RegisterToWebinarAsync(string id, Person personRequest)
+    public async Task<IResult> RegisterToWebinarAsync(string id, Person personRequest)
     {
         var request = new RegisterWebinarRequest
         {
@@ -59,7 +60,7 @@ public class WebinarController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddWebinarAsync([FromForm] NewWebinarRequest request)
+    public async Task<IResult> AddWebinarAsync([FromForm] NewWebinarRequest request)
     {
         var result = await _sender.Send(request);
         
@@ -69,7 +70,7 @@ public class WebinarController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CancelWebinarAsync(string id)
+    public async Task<IResult> CancelWebinarAsync(string id)
     {
         var request = new CancelWebinarRequest(id);
 

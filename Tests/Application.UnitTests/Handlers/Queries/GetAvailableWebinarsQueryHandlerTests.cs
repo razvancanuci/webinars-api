@@ -2,8 +2,9 @@
 using Application.Requests;
 using AutoFixture;
 using AutoFixture.Xunit2;
+using Domain.Dtos;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Application.UnitTests.Handlers.Queries;
 
@@ -24,6 +25,6 @@ public class GetAvailableWebinarsQueryHandlerTests : RequestHandlerTestsBase<Get
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<OkObjectResult>();
+        result.Should().BeOfType<Ok<IEnumerable<WebinarShortInfoDto>>>();
     }
 }

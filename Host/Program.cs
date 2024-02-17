@@ -13,6 +13,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.Identity.Web;
+using WebAPI.Endpoints;
 using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -174,7 +175,13 @@ app.UseExceptionHandler();
 app.UseRateLimiter();
 
 app.MapHealthChecks("/health");
-app.MapControllers();
+
+var versionSet = app.NewApiVersionSet()
+    .HasApiVersion(new ApiVersion(1))
+    .Build();
+
+app.NewApiVersionSet();
+app.AddWebinarEndpoints(versionSet);
 
 app.Run();
 

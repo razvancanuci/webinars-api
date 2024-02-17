@@ -2,11 +2,10 @@
 using Application.Requests;
 using Application.Services.Interfaces;
 using AutoFixture;
-using AutoFixture.AutoMoq;
 using AutoFixture.Xunit2;
 using Domain.Entities;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
 namespace Application.UnitTests.Handlers.Commands;
@@ -30,7 +29,7 @@ public class CancelWebinarCommandHandlerTests : RequestHandlerTestsBase<CancelWe
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<NotFoundObjectResult>();
+        result.Should().BeOfType<NotFound<string>>();
     }
     
     [Theory]
@@ -49,6 +48,6 @@ public class CancelWebinarCommandHandlerTests : RequestHandlerTestsBase<CancelWe
         
         // Assert
         _cacheServiceMock.Verify(m => m.DeleteKeyAsync(request.KeyToDelete));
-        result.Should().BeOfType<NoContentResult>();
+        result.Should().BeOfType<NoContent>();
     }
 }

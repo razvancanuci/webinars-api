@@ -3,7 +3,7 @@ using Application.Requests;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Handlers.Commands;
 
@@ -16,7 +16,7 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
         _fileStorage = fileStorage;
     }
     
-    public async Task<IActionResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
     {
         var webinar = new Webinar
         {
@@ -36,6 +36,6 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
             await _fileStorage.CreateAsync($"{webinar.Id}{extension}", request.Image);
         }
         
-        return new CreatedResult("AddWebinar", request);
+        return Results.Created("AddWebinar", request);
     }
 }
