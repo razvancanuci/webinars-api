@@ -4,7 +4,7 @@ using Application.Services.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Messages;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Handlers.Commands;
 
@@ -21,7 +21,7 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
         _messageService = messageService;
     }
     
-    public async Task<IActionResult> Handle(CancelWebinarRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(CancelWebinarRequest request, CancellationToken cancellationToken)
     {
         var queryResult = await UnitOfWork.WebinarRepository.GetAsync(
             criteria: w => w.Id == request.WebinarId);
@@ -30,7 +30,7 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
 
         if (webinar is null)
         {
-            return new NotFoundObjectResult("The webinar with specified id is not available");
+            return  Results.NotFound("The webinar with specified id is not available");
         }
         
         await _cacheService.DeleteKeyAsync(request.KeyToDelete);
@@ -43,7 +43,7 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
             await SendEmail(webinar.PeopleRegistered);
         }
         
-        return new NoContentResult();
+        return Results.NoContent();
     }
 
     private async Task SendEmail(IEnumerable<Person> people)

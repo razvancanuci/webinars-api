@@ -6,8 +6,7 @@ using Domain.Dtos;
 using Domain.Entities;
 using Domain.Interfaces;
 using Mapster;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Handlers.Queries;
 
@@ -15,7 +14,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
 {
     public GetAvailableWebinarsQueryHandler(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
-    public async Task<IActionResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
+    public async Task<IResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
         var result = await UnitOfWork.WebinarRepository
             .GetAsync(entity => entity.ScheduleDate > WebinarConstants.AvailabilityDate,
@@ -31,6 +30,6 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
         
         var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
-        return  new OkObjectResult(mappedResult);
+        return Results.Ok(mappedResult);
     }
 }
