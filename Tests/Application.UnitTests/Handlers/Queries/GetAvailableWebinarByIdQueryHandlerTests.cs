@@ -1,15 +1,14 @@
-﻿using System.Linq.Expressions;
-using Application.Handlers.Queries;
+﻿using Application.Handlers.Queries;
 using Application.Requests;
 using Application.Services.Interfaces;
 using AutoFixture;
 using AutoFixture.Xunit2;
+using Domain.Dtos;
 using Domain.Entities;
 using Domain.Interfaces;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using StackExchange.Redis;
 
 namespace Application.UnitTests.Handlers.Queries;
 
@@ -49,7 +48,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
             It.IsAny<TimeSpan>()
         ), Times.Once);
-        result.Should().BeOfType<NotFoundObjectResult>();
+        result.Should().BeOfType<NotFound<string>>();
     }
     
     [Theory]
@@ -80,6 +79,6 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
             It.IsAny<TimeSpan>()
         ), Times.Once);
-        result.Should().BeOfType<OkObjectResult>();
+        result.Should().BeOfType<Ok<WebinarInfoDto>>();
     }
 }

@@ -1,14 +1,11 @@
 ﻿using System.Linq.Expressions;
 using Application.Handlers.Commands;
 using Application.Requests;
-using Application.Services.Implementations;
-using Application.Services.Interfaces;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Domain.Entities;
 using FluentAssertions;
-using MassTransit;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
 namespace Application.UnitTests.Handlers.Commands;
@@ -37,7 +34,7 @@ public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<Regi
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<NotFoundResult>();
+        result.Should().BeOfType<NotFound<string>>();
     }
     
     [Theory]
@@ -55,6 +52,6 @@ public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<Regi
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<NoContentResult>();
+        result.Should().BeOfType<NoContent>();
     }
 }

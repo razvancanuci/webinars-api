@@ -3,9 +3,8 @@ using Application.Requests;
 using AutoFixture;
 using AutoFixture.Xunit2;
 using Domain.Entities;
-using Domain.Interfaces;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 
 namespace Application.UnitTests.Handlers.Commands;
@@ -31,7 +30,7 @@ public class AddNewWebinarCommandHandlerTests : RequestHandlerTestsBase<AddNewWe
         // Assert
         UnitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
         WebinarRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Webinar>()), Times.Once);
-        result.Should().BeOfType<CreatedResult>();
+        result.Should().BeOfType<Created<NewWebinarRequest>>();
     }
 
 
