@@ -137,7 +137,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     
     [Theory]
     [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5868", "1.0")]
-    public async Task CancelWebinar_Returns_StatusCodeCoContent(string webinarId, string apiVersion )
+    public async Task CancelWebinar_Returns_StatusCodeNoContent(string webinarId, string apiVersion )
     {
         // Arrange
         var httpClient = _factory.CreateClient();
