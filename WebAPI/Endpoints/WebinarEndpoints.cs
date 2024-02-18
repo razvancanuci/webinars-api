@@ -18,7 +18,7 @@ public static class WebinarEndpoints
     public static void AddWebinarEndpoints(this IEndpointRouteBuilder app, ApiVersionSet versionSet)
     {
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar", async (
-                [FromRoute] int apiVersion,
+                [FromRoute] string apiVersion,
                 [FromQuery] int page,
                 ISender sender) =>
             {
@@ -32,7 +32,7 @@ public static class WebinarEndpoints
             .Produces<Ok>();
 
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
-                [FromRoute] int apiVersion,
+                [FromRoute] string apiVersion,
                 [FromRoute] string id,
                 ISender sender) =>
             {
@@ -46,7 +46,7 @@ public static class WebinarEndpoints
             .Produces<Ok>()
             .Produces<NotFound>();
 
-        app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async ([FromRoute] int apiVersion,
+        app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async ([FromRoute] string apiVersion,
                 [FromRoute] string id,
                 [FromBody] Person personRequest,
                 IValidator<RegisterWebinarRequest> validator,
@@ -75,7 +75,7 @@ public static class WebinarEndpoints
             .Produces<NotFound>();
 
         app.MapPost("/api/v{apiVersion:apiVersion}/webinar",  async(
-                [FromRoute] int apiVersion,
+                [FromRoute] string apiVersion,
                 [FromForm] string title,
                 [FromForm] string description,
                 [FromForm] string host,
@@ -111,7 +111,7 @@ public static class WebinarEndpoints
             .Produces<BadRequest>();
 
         app.MapDelete("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
-                [FromRoute] int apiVersion,
+                [FromRoute] string apiVersion,
                 [FromRoute] string id,
                 ISender sender) =>
             {
