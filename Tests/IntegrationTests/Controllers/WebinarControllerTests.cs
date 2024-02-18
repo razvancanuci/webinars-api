@@ -77,23 +77,28 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
             Description = "This is the Description",
             DateScheduled = DateTime.UtcNow.AddDays(7),
         };
-        
+
         var apiVersion = "1.0";
         var httpClient = _factory.CreateClient();
-        
-        var stringDate = $"{requestData.DateScheduled.Month}/{requestData.DateScheduled.Day}/{requestData.DateScheduled.Year}";
+
+        using var file1 = File.OpenRead(@"TestData\speedtest.png");
+        using var content1 = new StreamContent(file1);
+
+        var stringDate =
+            $"{requestData.DateScheduled.Month}/{requestData.DateScheduled.Day}/{requestData.DateScheduled.Year}";
         var requestContent = new MultipartFormDataContent();
         requestContent.Add(new StringContent(requestData.Title, Encoding.UTF8, MediaTypeNames.Text.Plain), "Title");
-        requestContent.Add(new StringContent(requestData.Description, Encoding.UTF8, MediaTypeNames.Text.Plain), "Description");
+        requestContent.Add(new StringContent(requestData.Description, Encoding.UTF8, MediaTypeNames.Text.Plain),
+            "Description");
         requestContent.Add(new StringContent(requestData.Host, Encoding.UTF8, MediaTypeNames.Text.Plain), "Host");
         requestContent.Add(new StringContent(stringDate, Encoding.UTF8, MediaTypeNames.Text.Plain), "DateScheduled");
-        requestContent.Add(new StringContent(string.Empty, Encoding.UTF8, MediaTypeNames.Text.Plain), "Image");
+        requestContent.Add(content1, "Image", "speedtest.png");
         
         // Act
         var response = await httpClient.PostAsync(
             $"/api/v{apiVersion}/webinar",
             requestContent);
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
     }
@@ -101,7 +106,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Theory]
     [InlineData("1", "1.0")]
     [InlineData("2", "1.0")]
-    public async Task RegisterToWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion )
+    public async Task RegisterToWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion)
     {
         // Arrange
         var webinarRegistration = new Person
@@ -114,15 +119,15 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Act
         var response =
             await httpClient.PatchAsJsonAsync($"/api/v{apiVersion}/webinar/{webinarId}", webinarRegistration);
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     [Theory]
     [InlineData("1", "1.0")]
     [InlineData("2", "1.0")]
-    public async Task CancelWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion )
+    public async Task CancelWebinar_Returns_StatusCodeNotFound(string webinarId, string apiVersion)
     {
         // Arrange
         var httpClient = _factory.CreateClient();
@@ -130,14 +135,14 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Act
         var response =
             await httpClient.DeleteAsync($"/api/v{apiVersion}/webinar/{webinarId}");
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
-    
+
     [Theory]
     [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5868", "1.0")]
-    public async Task CancelWebinar_Returns_StatusCodeNoContent(string webinarId, string apiVersion )
+    public async Task CancelWebinar_Returns_StatusCodeNoContent(string webinarId, string apiVersion)
     {
         // Arrange
         var httpClient = _factory.CreateClient();
@@ -145,7 +150,7 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Act
         var response =
             await httpClient.DeleteAsync($"/api/v{apiVersion}/webinar/{webinarId}");
-        
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
