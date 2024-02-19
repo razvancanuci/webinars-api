@@ -1,14 +1,13 @@
 ﻿using Application.Requests;
 using Asp.Versioning.Builder;
 using Domain.Entities;
-using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using WebAPI.Endpoints.Filters;
 using DateTime = System.DateTime;
 
 namespace WebAPI.Endpoints;
@@ -27,6 +26,7 @@ public static class WebinarEndpoints
                 var result = await sender.Send(availableWebinarsRequest);
                 return result;
             })
+            .AddEndpointFilter<AvailableWebinarsEndpointFilter>()
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
             .Produces<Ok>();
@@ -46,10 +46,10 @@ public static class WebinarEndpoints
             .Produces<Ok>()
             .Produces<NotFound>();
 
-        app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async ([FromRoute] string apiVersion,
+        app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
+                [FromRoute] string apiVersion,
                 [FromRoute] string id,
                 [FromBody] Person personRequest,
-                IValidator<RegisterWebinarRequest> validator,
                 ISender sender) =>
             {
                 var request = new RegisterWebinarRequest
@@ -57,17 +57,12 @@ public static class WebinarEndpoints
                     WebinarId = id,
                     Person = personRequest
                 };
-
-                var (valid, errors) = await validator.ValidateModelAsync(request);
-                if (!valid)
-                {
-                    return Results.BadRequest(errors);
-                }
-
+                
                 var result = await sender.Send(request);
 
                 return result;
             })
+            .AddEndpointFilter<RegisterWebinarEndpointFilter>()
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
             .Produces<Ok>()
@@ -81,7 +76,6 @@ public static class WebinarEndpoints
                 [FromForm] string host,
                 [FromForm] DateTime dateScheduled,
                 IFormFile image,
-                IValidator<NewWebinarRequest> validator,
                 ISender sender) =>
             {
                 var request = new NewWebinarRequest()
@@ -93,17 +87,11 @@ public static class WebinarEndpoints
                     Image = image
                 };
                 
-                var (valid, errors) = await validator.ValidateModelAsync(request);
-                
-                if (!valid)
-                {
-                    return Results.BadRequest(errors);
-                }
-                
                 var result = await sender.Send(request);
 
                 return result;
             })
+            .AddEndpointFilter<NewWebinarEndpointFilter>()
             .DisableAntiforgery()
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
@@ -125,12 +113,5 @@ public static class WebinarEndpoints
             .HasApiVersion(1)
             .Produces<NoContent>()
             .Produces<NotFound>();
-    }
-
-    private static async Task<(bool, List<ValidationFailure>)> ValidateModelAsync<T>(this IValidator<T> validator, T model)
-    {
-        var validationResult = await validator.ValidateAsync(model);
-
-        return (validationResult.IsValid, validationResult.Errors);
     }
 }
