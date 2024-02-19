@@ -6,8 +6,10 @@ using AzureStorage;
 using DataAccess;
 using Domain.Messages;
 using Domain.Settings;
+using HealthChecks.UI.Client;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -174,7 +176,10 @@ app.UseHttpsRedirection();
 app.UseExceptionHandler();
 app.UseRateLimiter();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 var versionSet = app.NewApiVersionSet()
     .HasApiVersion(new ApiVersion(1))
