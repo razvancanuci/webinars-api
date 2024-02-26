@@ -1,5 +1,5 @@
-﻿using Application.Extensions;
-using Application.Requests.Interfaces;
+﻿using Application.Requests.Interfaces;
+using Domain.Extensions;
 
 namespace Application.Requests;
 
