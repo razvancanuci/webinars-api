@@ -1,4 +1,4 @@
-﻿namespace Application.Extensions;
+﻿namespace Domain.Extensions;
 
 public static class CacheKeysExtensions
 {

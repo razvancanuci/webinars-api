@@ -1,6 +1,6 @@
-﻿using Application.Requests.Interfaces;
+﻿using Domain.Interfaces.Requests;
 
-namespace Application.Extensions;
+namespace Domain.Extensions;
 
 public static class LinqExtensions
 {

@@ -1,4 +1,4 @@
-﻿namespace Application.Requests.Interfaces;
+﻿namespace Domain.Interfaces.Requests;
 
 public interface IPaginatedRequest
 {
