@@ -19,10 +19,8 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
     
     public async Task<IResult> Handle(RegisterWebinarRequest request, CancellationToken cancellationToken)
     {
-        var webinarList = await UnitOfWork.WebinarRepository
-            .GetAsync(entity => entity.Id == request.WebinarId);
-        
-        var webinar = webinarList.FirstOrDefault();
+        var webinar = await UnitOfWork.WebinarRepository
+            .GetByIdAsync(request.WebinarId);
         
         if (webinar is null)
         {

@@ -15,14 +15,13 @@ namespace Application.UnitTests.Handlers.Queries;
 public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<GetAvailableWebinarByIdQueryHandler>
 {
     private readonly Mock<ICacheService> _cacheServiceMock;
-    private readonly Mock<IFileStorage> _fileStorageMock;
     protected override GetAvailableWebinarByIdQueryHandler Handler { get; }
     public GetAvailableWebinarByIdQueryHandlerTests()
     {
         _cacheServiceMock = Fixture.Freeze<Mock<ICacheService>>();
-        _fileStorageMock = Fixture.Freeze<Mock<IFileStorage>>();
+        var fileStorageMock = Fixture.Freeze<Mock<IFileStorage>>();
 
-        _fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>()))
+        fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>()))
             .ReturnsAsync(default(Uri));
         
         Handler = Fixture.Create<GetAvailableWebinarByIdQueryHandler>();
@@ -33,21 +32,20 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
     public async Task Handle_ReturnsNotFoundResult_PassedThroughRepository(AvailableWebinarByIdRequest request)
     {
         // Arrange
-        _cacheServiceMock.Setup(x => x.GetOrCreateAsync(
-            It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
-            It.IsAny<TimeSpan>()
-        )).ReturnsAsync(new List<Webinar>());
-        
+        _cacheServiceMock.Setup(m => m.GetOrCreateAsync(It.IsAny<string>(),
+            It.IsAny<Func<ValueTask<Webinar>>>(),
+            It.IsAny<TimeSpan?>()))
+            .ReturnsAsync(default(Webinar)!);
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
 
         // Assert
         _cacheServiceMock.Verify(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
+            It.IsAny<Func<ValueTask<Webinar>>>(),
             It.IsAny<TimeSpan>()
         ), Times.Once);
+        
         result.Should().BeOfType<NotFound<string>>();
     }
     
@@ -58,9 +56,9 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         // Arrange
         _cacheServiceMock.Setup(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
+            It.IsAny<Func<ValueTask<Webinar>>>(),
             It.IsAny<TimeSpan>()
-        )).ReturnsAsync(new List<Webinar> {
+        )).ReturnsAsync(
             new Webinar
         {
             Id= "1",
@@ -68,7 +66,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             Description = "Description",
             Host = "Host",
             ScheduleDate = DateTime.UtcNow.AddDays(8),
-        }});
+        });
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
@@ -76,7 +74,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         // Assert
         _cacheServiceMock.Verify(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
-            It.IsAny<Func<Task<IEnumerable<Webinar>>>>(),
+            It.IsAny<Func<ValueTask<Webinar>>>(),
             It.IsAny<TimeSpan>()
         ), Times.Once);
         result.Should().BeOfType<Ok<WebinarInfoDto>>();

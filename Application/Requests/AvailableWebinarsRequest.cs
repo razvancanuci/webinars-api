@@ -1,4 +1,5 @@
 ﻿using Application.Requests.Interfaces;
+using Domain.Interfaces.Requests;
 
 namespace Application.Requests;
 

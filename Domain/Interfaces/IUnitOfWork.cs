@@ -4,6 +4,6 @@ namespace Domain.Interfaces;
 
 public interface IUnitOfWork
 {
-    public IRepository<Webinar> WebinarRepository { get; }
+    public IWebinarRepository WebinarRepository { get; }
     Task SaveAsync();
 }

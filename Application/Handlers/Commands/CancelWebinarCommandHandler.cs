@@ -23,10 +23,7 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
     
     public async Task<IResult> Handle(CancelWebinarRequest request, CancellationToken cancellationToken)
     {
-        var queryResult = await UnitOfWork.WebinarRepository.GetAsync(
-            criteria: w => w.Id == request.WebinarId);
-
-        var webinar = queryResult.FirstOrDefault();
+        var webinar = await UnitOfWork.WebinarRepository.GetByIdAsync(request.WebinarId);
 
         if (webinar is null)
         {

@@ -25,6 +25,10 @@ public class CancelWebinarCommandHandlerTests : RequestHandlerTestsBase<CancelWe
     [AutoData]
     public async Task Handle_Returns_NotFoundResult(CancelWebinarRequest request)
     {
+        // Arrange
+        WebinarRepositoryMock.Setup(x => x.GetByIdAsync(
+            request.WebinarId)).ReturnsAsync(default(Webinar));
+        
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
         
@@ -37,11 +41,8 @@ public class CancelWebinarCommandHandlerTests : RequestHandlerTestsBase<CancelWe
     public async Task Handle_Returns_NoContentResult_PassedThroughCacheDelete(CancelWebinarRequest request)
     {
         // Arrange
-        WebinarRepositoryMock.Setup(x => x.GetAsync(
-            w => w.Id == request.WebinarId,
-            null,
-            false
-        )).ReturnsAsync(new List<Webinar> { new Webinar { Id = request.WebinarId }});
+        WebinarRepositoryMock.Setup(x => x.GetByIdAsync(
+            request.WebinarId)).ReturnsAsync( new Webinar { Id = request.WebinarId });
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);

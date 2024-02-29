@@ -12,7 +12,7 @@ public static class ServicesExtensions
 {
     public static IServiceCollection AddDataAccess(this IServiceCollection services)
     {
-        services.AddScoped<IRepository<Webinar>, WebinarRepository>();
+        services.AddScoped<IWebinarRepository, WebinarRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
         services.AddDbContext<WebinarContext>((provider, options) =>
         {

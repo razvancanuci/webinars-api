@@ -24,11 +24,8 @@ public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<Regi
     public async Task Handle_ReturnsNotFoundResult(RegisterWebinarRequest request)
     {
         // Arrange
-        WebinarRepositoryMock.Setup(x => x.GetAsync(
-            It.IsAny<Expression<Func<Webinar, bool>>>(),
-            It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
-            true
-        )).ReturnsAsync(new List<Webinar>());
+        WebinarRepositoryMock.Setup(x => x.GetByIdAsync(request.WebinarId))
+            .ReturnsAsync(default(Webinar));
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
@@ -42,11 +39,8 @@ public class RegisterToWebinarCommandHandlerTests : RequestHandlerTestsBase<Regi
     public async Task Handle_ReturnsNoContentResult(RegisterWebinarRequest request)
     {
         // Arrange
-        WebinarRepositoryMock.Setup(x => x.GetAsync(
-            entity => entity.Id == request.WebinarId,
-            It.IsAny<Func<IQueryable<Webinar>, IQueryable<Webinar>>?>(),
-            false
-        )).ReturnsAsync(new List<Webinar>{new Webinar{Id = request.WebinarId}});
+        WebinarRepositoryMock.Setup(x => x.GetByIdAsync(
+             request.WebinarId)).ReturnsAsync(new Webinar{Id = request.WebinarId});
         
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
