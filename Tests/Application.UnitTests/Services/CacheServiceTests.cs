@@ -33,7 +33,7 @@ public class CacheServiceTests
 
         // Act
         var result = await _sut.GetOrCreateAsync(key,
-            () => Task.FromResult(new List<int>()));
+            () => ValueTask.FromResult(new List<int>()));
 
         // Assert
         result.Should().NotBeEmpty();
@@ -47,7 +47,7 @@ public class CacheServiceTests
     {
         // Act
         var result = await _sut.GetOrCreateAsync(key,
-            () => Task.FromResult(new List<int>()));
+            () => ValueTask.FromResult(new List<int>()));
 
         // Assert
         using (new AssertionScope())
