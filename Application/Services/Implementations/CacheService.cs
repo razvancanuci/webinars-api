@@ -1,6 +1,7 @@
 ﻿using Application.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Application.Services.Implementations;
 
@@ -19,7 +20,7 @@ public class CacheService : ICacheService
         await _cache.RemoveAsync(key);
     }
     
-    public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> dbQuery, TimeSpan? expiration = null)
+    public async Task<T> GetOrCreateAsync<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan? expiration = null)
     {
         var json = await _cache.GetStringAsync(key);
         
@@ -28,15 +29,15 @@ public class CacheService : ICacheService
             return await ExecuteQuery(key, dbQuery, expiration ?? DefaultExpiration);
         }
         
-        var result = JsonConvert.DeserializeObject<T>(json);
-        return result;
+        var result = JsonSerializer.Deserialize<T>(json);
+        return result!;
     }
 
-    private async Task<T> ExecuteQuery<T>(string key, Func<Task<T>> dbQuery, TimeSpan expiration)
+    private async Task<T> ExecuteQuery<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan expiration)
     {
         var queryResult = await dbQuery();
             
-        var cache = JsonConvert.SerializeObject(queryResult);
+        var cache = JsonSerializer.Serialize(queryResult);
         
         await _cache.SetStringAsync(
             key, 
