@@ -22,30 +22,19 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
     }
     public async Task<IResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
-        var webinars = await _cacheService.GetOrCreateAsync(request.Key,
+        var webinar = await _cacheService.GetOrCreateAsync(request.Key,
             () => UnitOfWork.WebinarRepository
-                .GetAsync(entity => entity.Id == request.WebinarId,
-                    additionalQuery: query => query.Select(w => new Webinar
-                    {
-                       Id = w.Id,
-                       Description = w.Description,
-                       Host = w.Host,
-                       Title = w.Title,
-                       ScheduleDate = w.ScheduleDate
-                    }),
-                    asNoTracking: true),
+                .GetByIdAsync(request.WebinarId),
             request.Expiration);
         
-        var result = webinars.FirstOrDefault();
-        
-        if (result is null)
+        if (webinar is null)
         {
             return Results.NotFound("The id was not found");
         }
         
-        var image = await _fileStorage.GetAsync(result.Id);
+        var image = await _fileStorage.GetAsync(webinar.Id);
         
-        var mappedResult = result.Adapt<WebinarInfoDto>();
+        var mappedResult = webinar.Adapt<WebinarInfoDto>();
         mappedResult.ImageUri = image;
 
         return Results.Ok(mappedResult);

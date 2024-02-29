@@ -5,6 +5,7 @@ using Domain.Dtos;
 using Domain.Entities;
 using Domain.Extensions;
 using Domain.Interfaces;
+using Domain.Specifications.Webinar;
 using Mapster;
 using Microsoft.AspNetCore.Http;
 
@@ -17,16 +18,7 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
     public async Task<IResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
         var result = await UnitOfWork.WebinarRepository
-            .GetAsync(entity => entity.ScheduleDate > WebinarConstants.AvailabilityDate,
-                query => query.OrderBy(x => x.ScheduleDate)
-                    .PageBy(request)
-                    .Select(w => new Webinar
-                    {
-                        Id = w.Id,
-                        Title = w.Title,
-                        Host = w.Host
-                    }),
-                asNoTracking: true);
+            .GetAsync(new GetWebinarsPaginatedSpecification(request));
         
         var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
         
