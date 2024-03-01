@@ -1,7 +1,7 @@
-﻿using Application.Services.Interfaces;
+﻿using Domain.Interfaces;
 using MassTransit;
 
-namespace Application.Services.Implementations;
+namespace Messaging;
 
 public class MessageService : IMessageService
 {
