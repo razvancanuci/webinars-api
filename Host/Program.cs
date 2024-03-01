@@ -4,10 +4,9 @@ using Asp.Versioning;
 using Azure.Identity;
 using AzureStorage;
 using DataAccess;
-using Domain.Messages;
 using Domain.Settings;
 using HealthChecks.UI.Client;
-using MassTransit;
+using Messaging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
@@ -69,33 +68,7 @@ builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
-builder.Services.AddMassTransit(x =>
-{
-    x.SetKebabCaseEndpointNameFormatter();
-    
-    x.AddConfigureEndpointsCallback((name, cfg) =>
-    {
-        cfg.UseMessageRetry(r => r.Immediate(2));
-    });
-    
-    x.UsingAzureServiceBus((context, cfg) =>
-    {
-        cfg.Host(builder.Configuration["ServiceBus:ConnectionString"]);
-        
-        cfg.Message<EmailRegistrationMessage>(
-            x =>
-            {
-                x.SetEntityName(builder.Configuration["ServiceBus:SendEmailTopicName"]!);
-            });
-        
-        cfg.Message<EmailCancellationMessage>(
-            x =>
-            {
-                x.SetEntityName(builder.Configuration["ServiceBus:SendEmailTopicName"]!);
-            });
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddMessagingServices(builder.Configuration);
 
 builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration["Redis:ConnectionString"]!)
