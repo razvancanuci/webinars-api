@@ -1,23 +1,24 @@
-﻿using Application.Services.Implementations;
-using Application.Services.Interfaces;
 using Domain.Entities;
+using Domain.Interfaces;
 using Domain.Messages;
 using MassTransit;
+using Messaging;
 using Moq;
 
-namespace Application.UnitTests.Services;
+namespace Infrastructure.Messaging.UnitTests;
 
 public class MessageServiceTests
 {
     private readonly Mock<IPublishEndpoint> _publisherMock;
-
+    
     private readonly IMessageService _sut;
+
     public MessageServiceTests()
     {
         _publisherMock = new Mock<IPublishEndpoint>();
         _sut = new MessageService(_publisherMock.Object);
     }
-
+    
     [Fact]
     public async Task Send_PassedThroughPublishEndpoint()
     {
