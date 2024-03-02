@@ -36,5 +36,5 @@ steps:
   inputs:
     command: 'test'
     arguments: '--no-build --verbosity normal --configuration $(buildConfiguration) --filter FullyQualifiedName!~IntegrationTests'
-    publishTestResults: false
+    publishTestResults: true
  
