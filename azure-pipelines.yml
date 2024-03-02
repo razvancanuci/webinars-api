@@ -35,6 +35,12 @@ steps:
   displayName: 'Run UnitTests'
   inputs:
     command: 'test'
-    arguments: '--no-build --verbosity normal --configuration $(buildConfiguration) --filter FullyQualifiedName!~IntegrationTests'
-    publishTestResults: false
+    arguments: '--no-build --verbosity normal --configuration $(buildConfiguration) --filter FullyQualifiedName!~IntegrationTests --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
+    publishTestResults: true
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage report'
+  inputs:
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
  
