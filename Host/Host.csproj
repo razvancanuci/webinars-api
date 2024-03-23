@@ -7,6 +7,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>true</InvariantGlobalization>
         <RootNamespace>WebinarAPI</RootNamespace>
+        <UserSecretsId>be3b24a9-0a39-48e2-9681-1e02aba2ad09</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
