@@ -1,9 +1,6 @@
 ﻿using Application.Handlers.Interfaces;
 using Application.Requests;
-using Domain.Constants;
 using Domain.Dtos;
-using Domain.Entities;
-using Domain.Extensions;
 using Domain.Interfaces;
 using Domain.Specifications.Webinar;
 using Mapster;
@@ -17,11 +14,22 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
 
     public async Task<IResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
-        var result = await UnitOfWork.WebinarRepository
+        var webinars = await UnitOfWork.WebinarRepository
             .GetAsync(new GetWebinarsPaginatedSpecification(request));
         
-        var mappedResult = result.Adapt<IEnumerable<WebinarShortInfoDto>>();
+        var mappedWebinars = webinars.Adapt<IEnumerable<WebinarShortInfoDto>>();
+
+        var pages = await GetNumberOfPages(request.ItemsPerPage);
+
+        var result = new WebinarPagedDto(pages, mappedWebinars);
         
-        return Results.Ok(mappedResult);
+        return Results.Ok(result);
+    }
+
+    private async Task<int> GetNumberOfPages(int itemsPerPage)
+    {
+        var count = await UnitOfWork.WebinarRepository.CountAsync();
+        
+        return (int)Math.Ceiling((double)count / itemsPerPage);
     }
 }

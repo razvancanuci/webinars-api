@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using DataAccess.Specifications;
+﻿using DataAccess.Specifications;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Specifications;
@@ -19,6 +18,11 @@ where TEntity : Entity
     public async ValueTask<TEntity?> GetByIdAsync(string id)
     {
         return await DbSet.FindAsync(id);
+    }
+
+    public Task<int> CountAsync()
+    {
+        return DbSet.CountAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAsync(Specification<TEntity> specification)

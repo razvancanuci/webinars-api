@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Specifications;
 
 namespace Domain.Interfaces;
@@ -11,4 +10,5 @@ where TEntity: Entity
     Task InsertAsync(TEntity entity);
     void Delete(TEntity entity);
     ValueTask<TEntity?> GetByIdAsync(string id);
+    Task<int> CountAsync();
 }
