@@ -25,6 +25,6 @@ public class GetAvailableWebinarsQueryHandlerTests : RequestHandlerTestsBase<Get
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        result.Should().BeOfType<Ok<IEnumerable<WebinarShortInfoDto>>>();
+        result.Should().BeOfType<Ok<WebinarPagedDto>>();
     }
 }
