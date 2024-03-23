@@ -23,6 +23,9 @@ public class WebinarContext : DbContext
         
         modelBuilder.Entity<Webinar>()
             .HasQueryFilter(w => w.ScheduleDate > WebinarConstants.AvailabilityDate);
+        
+        modelBuilder.Entity<Webinar>()
+            .HasQueryFilter(w => !w.IsDeleted);
 
         modelBuilder.Entity<Webinar>().HasKey(x => x.Id);
         modelBuilder.Entity<Webinar>().Property(x => x.Host).IsRequired();

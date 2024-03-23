@@ -12,5 +12,7 @@ public class Webinar : Entity
     public DateTime ScheduleDate { get; set; }
     public List<Person> PeopleRegistered { get; set; } = new();
 
+    public bool IsDeleted { get; set; }
+
     public bool IsAvailable() => ScheduleDate > WebinarConstants.AvailabilityDate;
 }
