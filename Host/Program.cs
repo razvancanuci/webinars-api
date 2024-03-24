@@ -1,19 +1,21 @@
 using System.Threading.RateLimiting;
+using AIServices;
 using Application;
 using Asp.Versioning;
+using Authentication;
 using Azure.Identity;
 using AzureStorage;
 using DataAccess;
+using Domain.Interfaces;
 using Domain.Settings;
 using HealthChecks.UI.Client;
 using Messaging;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using Microsoft.Identity.Web;
+using WebAPI;
 using WebAPI.Endpoints;
 using WebAPI.Handlers;
 
@@ -63,12 +65,14 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("Database"));
 builder.Services.Configure<AzureStorageSettings>(builder.Configuration.GetSection("Storage"));
 builder.Services.Configure<AzureServiceBusSettings>(builder.Configuration.GetSection("ServiceBus"));
+builder.Services.Configure<ContentModeratorSettings>(builder.Configuration.GetSection("ContentModerator"));
 
 builder.Services.AddAzureAppConfiguration().AddFeatureManagement();
 builder.Services.AddExceptionHandler<ExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddMessagingServices(builder.Configuration);
+builder.Services.AddAiServices();
 
 builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration["Redis:ConnectionString"]!)
@@ -110,17 +114,9 @@ builder.Services.AddApplicationServices()
     .AddDataAccess()
     .AddAzureBlobStorage();
 
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddAuthenticationServices(builder.Configuration);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(options =>
-    {
-        builder.Configuration.Bind("AzureAdB2C", options);
-    },
-    options =>
-    {
-        builder.Configuration.Bind("AzureAdB2C", options);
-    });
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddControllers();
 
