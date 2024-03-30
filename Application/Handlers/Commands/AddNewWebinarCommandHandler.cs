@@ -25,7 +25,7 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
     {
         var stream = request.Image.OpenReadStream();
 
-        var isRacyOrAdult = await _contentModerationService.IsRacyOrAdultImage(stream);
+        var isRacyOrAdult = await _contentModerationService.IsRacyOrAdultImage(stream, cancellationToken);
 
         if (isRacyOrAdult)
         {
@@ -43,11 +43,11 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
         cancellationToken.ThrowIfCancellationRequested();
 
         await UnitOfWork.WebinarRepository.InsertAsync(webinar);
-        await UnitOfWork.SaveAsync();
+        await UnitOfWork.SaveAsync(cancellationToken);
         
         var extension = WebinarConstants.AcceptedImageExtensions.First(x => request.Image.FileName.EndsWith(x));
 
-        await _fileStorage.CreateAsync($"{webinar.Id}{extension}", request.Image);
+        await _fileStorage.CreateAsync($"{webinar.Id}{extension}", request.Image, cancellationToken);
 
         return Results.Created("AddWebinar", request);
     }

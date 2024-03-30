@@ -27,14 +27,15 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
         var webinar = await _cacheService.GetOrCreateAsync(request.Key,
             () => UnitOfWork.WebinarRepository
                 .GetByIdAsync(request.WebinarId),
-            request.Expiration);
+            request.Expiration,
+            cancellationToken);
         
         if (webinar is null)
         {
             return Results.NotFound("The id was not found");
         }
         
-        var image = await _fileStorage.GetAsync(webinar.Id);
+        var image = await _fileStorage.GetAsync(webinar.Id, cancellationToken);
         
         var mappedResult = webinar.Adapt<WebinarInfoDto>();
         mappedResult.ImageUri = image;

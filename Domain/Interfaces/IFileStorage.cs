@@ -4,6 +4,6 @@ namespace Domain.Interfaces;
 
 public interface IFileStorage
 {
-    Task<Uri?> GetAsync(string path);
-    Task CreateAsync(string path, IFormFile content);
+    Task<Uri?> GetAsync(string path, CancellationToken cancellationToken = default);
+    Task CreateAsync(string path, IFormFile content, CancellationToken cancellationToken = default);
 }

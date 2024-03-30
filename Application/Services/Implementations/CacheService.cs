@@ -15,25 +15,25 @@ public class CacheService : ICacheService
         _cache = cache;
     }
 
-    public async Task DeleteKeyAsync(string key)
+    public async Task DeleteKeyAsync(string key, CancellationToken cancellationToken = default)
     {
-        await _cache.RemoveAsync(key);
+        await _cache.RemoveAsync(key, cancellationToken);
     }
     
-    public async Task<T> GetOrCreateAsync<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan? expiration = null)
+    public async Task<T> GetOrCreateAsync<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan? expiration = null, CancellationToken cancellationToken = default)
     {
-        var json = await _cache.GetStringAsync(key);
+        var json = await _cache.GetStringAsync(key, cancellationToken);
         
         if (string.IsNullOrEmpty(json))
         {
-            return await ExecuteQuery(key, dbQuery, expiration ?? DefaultExpiration);
+            return await ExecuteQuery(key, dbQuery, expiration ?? DefaultExpiration, cancellationToken);
         }
         
         var result = JsonSerializer.Deserialize<T>(json);
         return result!;
     }
 
-    private async Task<T> ExecuteQuery<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan expiration)
+    private async Task<T> ExecuteQuery<T>(string key, Func<ValueTask<T>> dbQuery, TimeSpan expiration, CancellationToken cancellationToken = default)
     {
         var queryResult = await dbQuery();
             
@@ -45,7 +45,8 @@ public class CacheService : ICacheService
             new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = expiration
-            });
+            },
+            cancellationToken);
             
         return queryResult;
     }

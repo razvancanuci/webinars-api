@@ -30,7 +30,7 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         cancellationToken.ThrowIfCancellationRequested();
         
         webinar.PeopleRegistered.Add(request.Person);
-        await UnitOfWork.SaveAsync();
+        await UnitOfWork.SaveAsync(cancellationToken);
 
 
         var message = new EmailRegistrationMessage(
@@ -39,13 +39,8 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
                 webinar.Title,
                 webinar.Host);
 
-        await SendEmail(message);
+        await _messageService.Send(message, cancellationToken);
         
         return Results.NoContent();
-    }
-
-    private async Task SendEmail(EmailRegistrationMessage message)
-    {
-        await _messageService.Send(message);
     }
 }
