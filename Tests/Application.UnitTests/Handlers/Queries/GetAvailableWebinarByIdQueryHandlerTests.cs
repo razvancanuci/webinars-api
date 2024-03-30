@@ -21,7 +21,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         _cacheServiceMock = Fixture.Freeze<Mock<ICacheService>>();
         var fileStorageMock = Fixture.Freeze<Mock<IFileStorage>>();
 
-        fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>()))
+        fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(default(Uri));
         
         Handler = Fixture.Create<GetAvailableWebinarByIdQueryHandler>();
@@ -34,7 +34,8 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         // Arrange
         _cacheServiceMock.Setup(m => m.GetOrCreateAsync(It.IsAny<string>(),
             It.IsAny<Func<ValueTask<Webinar>>>(),
-            It.IsAny<TimeSpan?>()))
+            It.IsAny<TimeSpan?>(),
+            It.IsAny<CancellationToken>()))
             .ReturnsAsync(default(Webinar)!);
         // Act
         var result = await Handler.Handle(request, CancellationToken.None);
@@ -43,7 +44,8 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         _cacheServiceMock.Verify(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
             It.IsAny<Func<ValueTask<Webinar>>>(),
-            It.IsAny<TimeSpan>()
+            It.IsAny<TimeSpan>(),
+            It.IsAny<CancellationToken>()
         ), Times.Once);
         
         result.Should().BeOfType<NotFound<string>>();
@@ -57,7 +59,8 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         _cacheServiceMock.Setup(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
             It.IsAny<Func<ValueTask<Webinar>>>(),
-            It.IsAny<TimeSpan>()
+            It.IsAny<TimeSpan>(),
+            It.IsAny<CancellationToken>()
         )).ReturnsAsync(
             new Webinar
         {
@@ -75,7 +78,8 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
         _cacheServiceMock.Verify(x => x.GetOrCreateAsync(
             It.IsAny<string>(),
             It.IsAny<Func<ValueTask<Webinar>>>(),
-            It.IsAny<TimeSpan>()
+            It.IsAny<TimeSpan>(),
+            It.IsAny<CancellationToken>()
         ), Times.Once);
         result.Should().BeOfType<Ok<WebinarInfoDto>>();
     }

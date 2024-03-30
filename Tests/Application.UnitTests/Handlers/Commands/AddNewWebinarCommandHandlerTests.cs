@@ -34,7 +34,7 @@ public class AddNewWebinarCommandHandlerTests : RequestHandlerTestsBase<AddNewWe
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        UnitOfWorkMock.Verify(x => x.SaveAsync(), Times.Once);
+        UnitOfWorkMock.Verify(x => x.SaveAsync(It.IsAny<CancellationToken>()), Times.Once);
         WebinarRepositoryMock.Verify(x => x.InsertAsync(It.IsAny<Webinar>()), Times.Once);
         result.Should().BeOfType<Created<NewWebinarRequest>>();
     }
@@ -45,7 +45,7 @@ public class AddNewWebinarCommandHandlerTests : RequestHandlerTestsBase<AddNewWe
         // Arrange
         var request = new NewWebinarRequest { Title = "t", Image = new FormFile(new MemoryStream(1), 2,1,"a","a.png") };
 
-        _contentModerationServiceMock.Setup(m => m.IsRacyOrAdultImage(It.IsAny<Stream>()))
+        _contentModerationServiceMock.Setup(m => m.IsRacyOrAdultImage(It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
         
         // Act

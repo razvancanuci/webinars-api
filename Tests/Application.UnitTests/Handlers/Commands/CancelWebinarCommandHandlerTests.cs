@@ -48,7 +48,7 @@ public class CancelWebinarCommandHandlerTests : RequestHandlerTestsBase<CancelWe
         var result = await Handler.Handle(request, CancellationToken.None);
         
         // Assert
-        _cacheServiceMock.Verify(m => m.DeleteKeyAsync(request.KeyToDelete));
+        _cacheServiceMock.Verify(m => m.DeleteKeyAsync(request.KeyToDelete, It.IsAny<CancellationToken>()));
         result.Should().BeOfType<NoContent>();
     }
 }
