@@ -2,5 +2,5 @@
 
 public interface IContentModerationService
 {
-    Task<bool> IsRacyOrAdultImage(Stream stream);
+    Task<bool> IsRacyOrAdultImage(Stream stream, CancellationToken cancellationToken = default);
 }
