@@ -9,7 +9,7 @@ namespace DataAccess.Repositories;
 public class GenericRepository<TEntity> : IRepository<TEntity>
 where TEntity : Entity
 {
-    protected DbSet<TEntity> DbSet { get; set; }
+    protected DbSet<TEntity> DbSet { get; }
     protected GenericRepository(WebinarContext context)
     {
         DbSet = context.Set<TEntity>();
@@ -20,14 +20,14 @@ where TEntity : Entity
         return await DbSet.FindAsync(id);
     }
 
-    public Task<int> CountAsync()
+    public Task<int> CountAsync(CancellationToken cancellationToken = default)
     {
-        return DbSet.CountAsync();
+        return DbSet.CountAsync(cancellationToken: cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAsync(Specification<TEntity> specification)
+    public async Task<IEnumerable<TEntity>> GetAsync(Specification<TEntity> specification, CancellationToken cancellationToken = default)
     {
-        return await SpecificationBuilder.Build(DbSet, specification).ToListAsync();
+        return await SpecificationBuilder.Build(DbSet, specification).ToListAsync(cancellationToken: cancellationToken);
     }
 
     public async Task InsertAsync(TEntity entity)
