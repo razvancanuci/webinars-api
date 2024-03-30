@@ -17,20 +17,20 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
         cancellationToken.ThrowIfCancellationRequested();
         
         var webinars = await UnitOfWork.WebinarRepository
-            .GetAsync(new GetWebinarsPaginatedSpecification(request));
+            .GetAsync(new GetWebinarsPaginatedSpecification(request), cancellationToken);
         
         var mappedWebinars = webinars.Adapt<IEnumerable<WebinarShortInfoDto>>();
 
-        var pages = await GetNumberOfPages(request.ItemsPerPage);
+        var pages = await GetNumberOfPages(request.ItemsPerPage, cancellationToken);
 
         var result = new WebinarPagedDto(pages, mappedWebinars);
         
         return Results.Ok(result);
     }
 
-    private async Task<int> GetNumberOfPages(int itemsPerPage)
+    private async Task<int> GetNumberOfPages(int itemsPerPage, CancellationToken cancellationToken = default)
     {
-        var count = await UnitOfWork.WebinarRepository.CountAsync();
+        var count = await UnitOfWork.WebinarRepository.CountAsync(cancellationToken);
         
         return (int)Math.Ceiling((double)count / itemsPerPage);
     }
