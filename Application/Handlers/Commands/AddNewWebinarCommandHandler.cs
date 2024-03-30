@@ -39,6 +39,8 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
             Host = request.Host,
             ScheduleDate = request.DateScheduled
         };
+        
+        cancellationToken.ThrowIfCancellationRequested();
 
         await UnitOfWork.WebinarRepository.InsertAsync(webinar);
         await UnitOfWork.SaveAsync();

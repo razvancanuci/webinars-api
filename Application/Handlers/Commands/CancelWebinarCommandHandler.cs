@@ -27,10 +27,10 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
 
         if (webinar is null)
         {
-            return  Results.NotFound("The webinar with specified id is not available");
+            return Results.NotFound("The webinar with specified id is not available");
         }
 
-        await DeleteWebinar(webinar, request.KeyToDelete);
+        await DeleteWebinar(webinar, request.KeyToDelete, cancellationToken);
         
         if (webinar.PeopleRegistered.Count > 0)
         {
@@ -47,9 +47,12 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
         await _messageService.Send(message);
     }
 
-    private async Task DeleteWebinar(Webinar webinar, string cacheKey)
+    private async Task DeleteWebinar(Webinar webinar, string cacheKey, CancellationToken cancellationToken)
     {
         await _cacheService.DeleteKeyAsync(cacheKey);
+        
+        cancellationToken.ThrowIfCancellationRequested();
+        
         webinar.IsDeleted = true;
         await UnitOfWork.SaveAsync();
     }

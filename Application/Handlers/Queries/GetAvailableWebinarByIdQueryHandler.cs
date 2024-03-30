@@ -22,6 +22,8 @@ public class GetAvailableWebinarByIdQueryHandler : RequestHandlerBase, IQueryHan
     }
     public async Task<IResult> Handle(AvailableWebinarByIdRequest request, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        
         var webinar = await _cacheService.GetOrCreateAsync(request.Key,
             () => UnitOfWork.WebinarRepository
                 .GetByIdAsync(request.WebinarId),

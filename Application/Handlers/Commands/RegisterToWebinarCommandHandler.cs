@@ -27,6 +27,8 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
             return Results.NotFound("The id was not found in the database");
         }
         
+        cancellationToken.ThrowIfCancellationRequested();
+        
         webinar.PeopleRegistered.Add(request.Person);
         await UnitOfWork.SaveAsync();
 

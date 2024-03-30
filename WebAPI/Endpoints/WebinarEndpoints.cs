@@ -19,11 +19,12 @@ public static class WebinarEndpoints
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar", async (
                 [FromRoute] string apiVersion,
                 [FromQuery] int page,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var availableWebinarsRequest = new AvailableWebinarsRequest { Page = page };
                 
-                var result = await sender.Send(availableWebinarsRequest);
+                var result = await sender.Send(availableWebinarsRequest, cancellationToken);
                 return result;
             })
             .AddEndpointFilter<AvailableWebinarsEndpointFilter>()
@@ -34,10 +35,11 @@ public static class WebinarEndpoints
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,
                 [FromRoute] string id,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var webinarByIdRequest = new AvailableWebinarByIdRequest(id);
-                var result = await sender.Send(webinarByIdRequest);
+                var result = await sender.Send(webinarByIdRequest, cancellationToken);
 
                 return result;
             })
@@ -50,7 +52,8 @@ public static class WebinarEndpoints
                 [FromRoute] string apiVersion,
                 [FromRoute] string id,
                 [FromBody] Person personRequest,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var request = new RegisterWebinarRequest
                 {
@@ -58,7 +61,7 @@ public static class WebinarEndpoints
                     Person = personRequest
                 };
                 
-                var result = await sender.Send(request);
+                var result = await sender.Send(request, cancellationToken);
 
                 return result;
             })
@@ -76,7 +79,8 @@ public static class WebinarEndpoints
                 [FromForm] string host,
                 [FromForm] DateTime dateScheduled,
                 IFormFile image,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var request = new NewWebinarRequest()
                 {
@@ -87,7 +91,7 @@ public static class WebinarEndpoints
                     Image = image
                 };
                 
-                var result = await sender.Send(request);
+                var result = await sender.Send(request, cancellationToken);
 
                 return result;
             })
@@ -101,11 +105,12 @@ public static class WebinarEndpoints
         app.MapDelete("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,
                 [FromRoute] string id,
-                ISender sender) =>
+                ISender sender,
+                CancellationToken cancellationToken) =>
             {
                 var request = new CancelWebinarRequest(id);
 
-                var result = await sender.Send(request);
+                var result = await sender.Send(request, cancellationToken);
 
                 return result;
             })

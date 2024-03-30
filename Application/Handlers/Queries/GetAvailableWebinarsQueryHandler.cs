@@ -14,6 +14,8 @@ public class GetAvailableWebinarsQueryHandler : RequestHandlerBase, IQueryHandle
 
     public async Task<IResult> Handle(AvailableWebinarsRequest request, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+        
         var webinars = await UnitOfWork.WebinarRepository
             .GetAsync(new GetWebinarsPaginatedSpecification(request));
         
