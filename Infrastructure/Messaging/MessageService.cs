@@ -12,8 +12,8 @@ public class MessageService : IMessageService
         _publisher = publisher;
     }
     
-    public async Task Send<T>(T message) where T : class
+    public async Task Send<T>(T message, CancellationToken cancellationToken = default) where T : class
     {
-        await _publisher.Publish(message);
+        await _publisher.Publish(message, cancellationToken: cancellationToken);
     }
 }
