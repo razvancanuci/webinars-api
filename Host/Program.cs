@@ -6,7 +6,6 @@ using Authentication;
 using Azure.Identity;
 using AzureStorage;
 using DataAccess;
-using Domain.Interfaces;
 using Domain.Settings;
 using HealthChecks.UI.Client;
 using Messaging;
@@ -15,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
-using WebAPI;
 using WebAPI.Endpoints;
 using WebAPI.Handlers;
 
