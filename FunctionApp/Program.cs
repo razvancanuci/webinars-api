@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var host = new HostBuilder()
@@ -16,6 +17,27 @@ var host = new HostBuilder()
             .AddEnvironmentVariables()
             .AddUserSecrets(assembly, true);
     })
-    .Build();
+    .ConfigureServices(services =>
+    {
+        services.AddHealthChecks()
+            .AddAzureServiceBusSubscription(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var connectionString = configuration["ServiceBus:ConnectionString"]!;
 
+                return connectionString;
+            },
+            provider => "send-emails-topic",
+                provider => "send-email-cancellation-subscription")
+            .AddAzureServiceBusSubscription(provider =>
+            {
+                var configuration = provider.GetRequiredService<IConfiguration>();
+                var connectionString = configuration["ServiceBus:ConnectionString"]!;
+
+                return connectionString;
+            },
+            provider => "send-emails-topic",
+            provider => "send-email-registration-subscription");
+    })
+    .Build();
 host.Run();
