@@ -15,7 +15,7 @@ public class AzureBlobStorage : IFileStorage
         _settings = settings.Value;
     }
 
-    public async Task<Uri?> GetAsync(string path, CancellationToken cancellationToken = default)
+    public async Task<(Stream Stream, string ContentType)> GetAsync(string path, CancellationToken cancellationToken = default)
     {
         var container = await GetContainerClientAsync(cancellationToken);
 
@@ -26,9 +26,13 @@ public class AzureBlobStorage : IFileStorage
             return default;
         }
         
-        var blobContent = container.GetBlobClient(blob.Name);
+        var blobFile = container.GetBlobClient(blob.Name);
 
-        return blobContent.Uri;
+        var content = await blobFile.DownloadContentAsync(cancellationToken);
+        
+        
+
+        return (content.Value.Content.ToStream(), content.Value.Details.ContentType);
     }
 
     public async Task CreateAsync(string path, IFormFile blob, CancellationToken cancellationToken = default)
