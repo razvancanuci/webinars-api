@@ -47,6 +47,22 @@ public static class WebinarEndpoints
             .HasApiVersion(1)
             .Produces<Ok>()
             .Produces<NotFound>();
+        
+        app.MapGet("/api/v{apiVersion:apiVersion}/webinar/{id}/image", async (
+                [FromRoute] string apiVersion,
+                [FromRoute] string id,
+                ISender sender,
+                CancellationToken cancellationToken) =>
+            {
+                var webinarImageRequest = new DownloadWebinarImageRequest(id);
+                var result = await sender.Send(webinarImageRequest, cancellationToken);
+
+                return result;
+            })
+            .WithApiVersionSet(versionSet)
+            .HasApiVersion(1)
+            .Produces<Ok>()
+            .Produces<NotFound>();
 
         app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,
