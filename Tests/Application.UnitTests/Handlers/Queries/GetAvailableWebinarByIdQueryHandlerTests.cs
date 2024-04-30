@@ -5,7 +5,6 @@ using AutoFixture;
 using AutoFixture.Xunit2;
 using Domain.Dtos;
 using Domain.Entities;
-using Domain.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
@@ -19,10 +18,6 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
     public GetAvailableWebinarByIdQueryHandlerTests()
     {
         _cacheServiceMock = Fixture.Freeze<Mock<ICacheService>>();
-        var fileStorageMock = Fixture.Freeze<Mock<IFileStorage>>();
-
-        fileStorageMock.Setup(m => m.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(default(Uri));
         
         Handler = Fixture.Create<GetAvailableWebinarByIdQueryHandler>();
     }
