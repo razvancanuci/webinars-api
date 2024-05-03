@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Domain.Interfaces;
 using Domain.Settings;
 using Microsoft.Azure.CognitiveServices.ContentModerator;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace AIServices;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAiServices(this IServiceCollection services)

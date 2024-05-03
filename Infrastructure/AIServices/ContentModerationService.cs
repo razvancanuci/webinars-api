@@ -7,7 +7,7 @@ public class ContentModerationService : IContentModerationService
 {
     private readonly IContentModeratorClient _client;
 
-    public ContentModerationService(ContentModeratorClient client)
+    public ContentModerationService(IContentModeratorClient client)
     {
         _client = client;
     }

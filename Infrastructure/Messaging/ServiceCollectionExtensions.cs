@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Domain.Interfaces;
 using Domain.Messages;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Messaging;
 
+[ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMessagingServices(this IServiceCollection services, IConfiguration configuration)

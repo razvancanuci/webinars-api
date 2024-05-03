@@ -1,7 +1,9 @@
-﻿using Domain.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using Domain.Interfaces;
 
 namespace DataAccess;
 
+[ExcludeFromCodeCoverage]
 public class UnitOfWork: IUnitOfWork
 {
     public IWebinarRepository WebinarRepository { get; init; }
