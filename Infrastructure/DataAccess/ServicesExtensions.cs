@@ -1,4 +1,5 @@
-﻿using DataAccess.Repositories;
+﻿using System.Diagnostics.CodeAnalysis;
+using DataAccess.Repositories;
 using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Settings;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace DataAccess;
 
+[ExcludeFromCodeCoverage]
 public static class ServicesExtensions
 {
     public static IServiceCollection AddDataAccess(this IServiceCollection services)

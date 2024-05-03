@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using Domain.Constants;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace DataAccess;
 
+[ExcludeFromCodeCoverage]
 public class WebinarContext : DbContext
 {
     public DbSet<Webinar> Webinars { get; set; }

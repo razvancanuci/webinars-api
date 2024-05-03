@@ -1,9 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using Application.Requests;
 using FluentValidation;
 
 namespace Application.Validators;
 
+[ExcludeFromCodeCoverage]
 public class RegisterWebinarRequestValidator : AbstractValidator<RegisterWebinarRequest>
 {
     private static readonly Regex PhoneRegex = new(@"^07[0-8]{1}[0-9]{7}$");

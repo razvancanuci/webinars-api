@@ -1,8 +1,10 @@
-﻿using Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using Application.Requests;
 using FluentValidation;
 
 namespace Application.Validators;
 
+[ExcludeFromCodeCoverage]
 public class AvailableWebinarsRequestValidator : AbstractValidator<AvailableWebinarsRequest>
 {
     public AvailableWebinarsRequestValidator()

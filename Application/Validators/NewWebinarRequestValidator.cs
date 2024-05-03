@@ -1,10 +1,12 @@
-﻿using Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using Application.Requests;
 using Domain.Constants;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Validators;
 
+[ExcludeFromCodeCoverage]
 public class NewWebinarRequestValidator : AbstractValidator<NewWebinarRequest>
 {
     public NewWebinarRequestValidator()

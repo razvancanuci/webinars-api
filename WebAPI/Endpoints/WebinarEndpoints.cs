@@ -1,4 +1,5 @@
-﻿using Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using Application.Requests;
 using Asp.Versioning.Builder;
 using Domain.Entities;
 using MediatR;
@@ -12,6 +13,7 @@ using DateTime = System.DateTime;
 
 namespace WebAPI.Endpoints;
 
+[ExcludeFromCodeCoverage]
 public static class WebinarEndpoints
 {
     public static void AddWebinarEndpoints(this IEndpointRouteBuilder app, ApiVersionSet versionSet)

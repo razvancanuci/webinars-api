@@ -1,4 +1,5 @@
-﻿using Application.Requests;
+﻿using System.Diagnostics.CodeAnalysis;
+using Application.Requests;
 using Asp.Versioning;
 using Domain.Entities;
 using MediatR;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+[ExcludeFromCodeCoverage]
 [Obsolete]
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
