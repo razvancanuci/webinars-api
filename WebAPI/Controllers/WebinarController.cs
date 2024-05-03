@@ -39,6 +39,17 @@ public class WebinarController : ControllerBase
         
         return result;
     }
+    
+    [HttpGet("{id}/image")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> DownloadImageAsync(string id)
+    {
+        var webinarByIdRequest = new DownloadWebinarImageRequest(id);
+        var result = await _sender.Send(webinarByIdRequest);
+        
+        return result;
+    }
 
     [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
