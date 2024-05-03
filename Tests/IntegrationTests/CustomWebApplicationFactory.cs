@@ -1,4 +1,6 @@
-﻿using MassTransit;
+﻿using Domain.Interfaces;
+using IntegrationTests.Shims;
+using MassTransit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +17,7 @@ public class CustomWebApplicationFactory: WebApplicationFactory<Program>
         })
         .ConfigureServices((context, services) =>
         {
+            services.ReplaceScoped<IContentModerationService, ContentModerationServiceShim>();
             services.AddMassTransitTestHarness();
         });
     }
