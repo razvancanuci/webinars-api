@@ -154,6 +154,21 @@ public class WebinarControllerTests : IClassFixture<CustomWebApplicationFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
+    
+    [Theory]
+    [InlineData("b21d1afb-7dc5-478f-b260-76e5f7af79ef", "1.0")]
+    [InlineData("e6e56821-0284-4f10-aafa-167e1c8f5868", "1.0")]
+    public async Task DownloadImage_NoImageProvided_ReturnsStatusCodeNotFound(string webinarId, string apiVersion)
+    {
+        // Arrange
+        var httpClient = _factory.CreateClient();
+
+        // Act
+        var response = await httpClient.GetAsync($"/api/v{apiVersion}/webinar/{webinarId}/image");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 
     public async Task InitializeAsync()
     {
