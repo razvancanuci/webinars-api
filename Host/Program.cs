@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using WebAPI.Endpoints;
 using WebAPI.Handlers;
+using WebinarAPI.Telemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
