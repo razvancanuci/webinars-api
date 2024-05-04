@@ -4,6 +4,7 @@ using Domain.Constants;
 using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Handlers.Commands;
 
@@ -11,14 +12,17 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
 {
     private readonly IFileStorage _fileStorage;
     private readonly IContentModerationService _contentModerationService;
+    private readonly ILogger<AddNewWebinarCommandHandler> _logger;
 
     public AddNewWebinarCommandHandler(
         IUnitOfWork unitOfWork,
         IFileStorage fileStorage,
-        IContentModerationService contentModerationService) : base(unitOfWork)
+        IContentModerationService contentModerationService,
+        ILogger<AddNewWebinarCommandHandler> logger) : base(unitOfWork)
     {
         _fileStorage = fileStorage;
         _contentModerationService = contentModerationService;
+        _logger = logger;
     }
 
     public async Task<IResult> Handle(NewWebinarRequest request, CancellationToken cancellationToken)
@@ -29,6 +33,7 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
 
         if (isRacyOrAdult)
         {
+            _logger.LogInformation("The client introduced a racy or adult image");
             return Results.BadRequest("The image contains adult or racy content");
         }
         
@@ -45,9 +50,7 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
         await UnitOfWork.WebinarRepository.InsertAsync(webinar);
         await UnitOfWork.SaveAsync(cancellationToken);
         
-        var extension = WebinarConstants.AcceptedImageExtensions.First(x => request.Image.FileName.EndsWith(x));
-
-        await _fileStorage.CreateAsync($"{webinar.Id}{extension}", request.Image, cancellationToken);
+        await _fileStorage.CreateAsync(webinar.Id, request.Image, cancellationToken);
 
         return Results.Created("AddWebinar", request);
     }
