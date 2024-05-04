@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using WebAPI.Endpoints;
 using WebAPI.Handlers;
+using WebinarAPI.Telemetry;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -103,10 +104,7 @@ builder.Services.AddHealthChecks()
         return settings.SendEmailTopicName;
     });
 
-builder.Services.AddApplicationInsightsTelemetry(options =>
-{
-    options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"]!;
-});
+builder.Services.AddAppInsights(builder.Configuration);
 
 builder.Services.AddApplicationServices()
     .AddDataAccess()
