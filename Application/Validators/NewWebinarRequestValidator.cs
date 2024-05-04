@@ -56,17 +56,13 @@ public class NewWebinarRequestValidator : AbstractValidator<NewWebinarRequest>
     private void RuleForImage()
     {
         RuleFor(x => x.Image)
+            .NotNull()
             .Must(ValidateExtension)
             .WithMessage("Image validation was violated");
     }
 
     private bool ValidateExtension(IFormFile image)
     {
-        if (image is null)
-        {
-            return false;
-        }
-
         return WebinarConstants.AcceptedImageExtensions.Exists(x => image.FileName.EndsWith(x));
     }
 }
