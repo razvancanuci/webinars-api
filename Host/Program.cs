@@ -103,10 +103,7 @@ builder.Services.AddHealthChecks()
         return settings.SendEmailTopicName;
     });
 
-builder.Services.AddApplicationInsightsTelemetry(options =>
-{
-    options.ConnectionString = builder.Configuration["AppInsights:ConnectionString"]!;
-});
+builder.Services.AddAppInsights(builder.Configuration);
 
 builder.Services.AddApplicationServices()
     .AddDataAccess()
