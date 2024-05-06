@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using System.Threading.RateLimiting;
 using AIServices;
 using Application;
@@ -10,6 +11,7 @@ using Domain.Settings;
 using HealthChecks.UI.Client;
 using Messaging;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
@@ -105,12 +107,28 @@ builder.Services.AddHealthChecks()
     });
 
 builder.Services.AddAppInsights(builder.Configuration);
+builder.Logging.AddAppInsightsLogs(builder.Configuration);
 
 builder.Services.AddApplicationServices()
     .AddDataAccess()
     .AddAzureBlobStorage();
 
 builder.Services.AddAuthenticationServices(builder.Configuration);
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Fastest;
+});
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = CompressionLevel.Optimal;
+});
+
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -125,6 +143,7 @@ builder.Services.AddApiVersioning(o =>
 
 var app = builder.Build();
 
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
