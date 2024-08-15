@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
                 Title = src.Title,
                 Host = src.Host,
                 Description = src.Description,
-                ScheduleDate = src.ScheduleDate
+                ScheduledAt = src.ScheduledAt
             });
         return services;
     }

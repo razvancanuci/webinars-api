@@ -21,7 +21,7 @@ public static class DatabaseSeed
                 Title = "Good webinar",
                 Description = "Very good webinar come here",
                 Host = "Lup",
-                ScheduleDate = DateTime.UtcNow.AddDays(15)
+                ScheduledAt = DateTime.UtcNow.AddDays(15)
             },
             new Webinar
             {
@@ -29,7 +29,7 @@ public static class DatabaseSeed
                 Title = "Good webinar2",
                 Description = "Very good webinar come here2",
                 Host = "Lup",
-                ScheduleDate = DateTime.UtcNow.AddDays(20),
+                ScheduledAt = DateTime.UtcNow.AddDays(20),
             }
         };
     }

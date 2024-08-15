@@ -63,7 +63,7 @@ public class GetAvailableWebinarByIdQueryHandlerTests : RequestHandlerTestsBase<
             Title = "Title",
             Description = "Description",
             Host = "Host",
-            ScheduleDate = DateTime.UtcNow.AddDays(8),
+            ScheduledAt = DateTime.UtcNow.AddDays(8),
         });
         
         // Act

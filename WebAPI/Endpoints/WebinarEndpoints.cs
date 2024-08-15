@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using WebAPI.Endpoints.Filters;
 using DateTime = System.DateTime;
 
@@ -32,7 +33,8 @@ public static class WebinarEndpoints
             .AddEndpointFilter<AvailableWebinarsEndpointFilter>()
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
-            .Produces<Ok>();
+            .Produces<Ok>()
+            .CacheOutput();
 
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,
@@ -48,7 +50,8 @@ public static class WebinarEndpoints
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
             .Produces<Ok>()
-            .Produces<NotFound>();
+            .Produces<NotFound>()
+            .CacheOutput();
         
         app.MapGet("/api/v{apiVersion:apiVersion}/webinar/{id}/image", async (
                 [FromRoute] string apiVersion,
@@ -64,7 +67,8 @@ public static class WebinarEndpoints
             .WithApiVersionSet(versionSet)
             .HasApiVersion(1)
             .Produces<Ok>()
-            .Produces<NotFound>();
+            .Produces<NotFound>()
+            .CacheOutput();
 
         app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,

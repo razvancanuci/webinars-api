@@ -42,7 +42,7 @@ public class AddNewWebinarCommandHandler : RequestHandlerBase, ICommandHandler<N
             Title = request.Title,
             Description = request.Description,
             Host = request.Host,
-            ScheduleDate = request.DateScheduled
+            ScheduledAt = request.DateScheduled
         };
         
         cancellationToken.ThrowIfCancellationRequested();

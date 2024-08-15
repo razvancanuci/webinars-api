@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using DataAccess.Interceptors;
 using DataAccess.Repositories;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -14,6 +15,7 @@ public static class ServicesExtensions
 {
     public static IServiceCollection AddDataAccess(this IServiceCollection services)
     {
+        services.AddSingleton<WebinarContextInterceptor>();
         services.AddScoped<IWebinarRepository, WebinarRepository>();
         services.AddTransient<IUnitOfWork, UnitOfWork>();
         services.AddDbContext<WebinarContext>((provider, options) =>
@@ -22,7 +24,8 @@ public static class ServicesExtensions
             options.UseCosmos(
                 dbSettings.ConnectionString,
                 dbSettings.DbName
-            );
+            )
+            .AddInterceptors(provider.GetRequiredService<WebinarContextInterceptor>());
         });
            
         return services;

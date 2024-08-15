@@ -52,7 +52,7 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
     private async Task DeleteWebinar(Webinar webinar, string cacheKey, CancellationToken cancellationToken)
     {
         await _cacheService.DeleteKeyAsync(cacheKey, cancellationToken: cancellationToken);
-        webinar.IsDeleted = true;
+        UnitOfWork.WebinarRepository.Delete(webinar);
         await UnitOfWork.SaveAsync(cancellationToken);
     }
 }
