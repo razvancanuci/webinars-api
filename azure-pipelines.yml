@@ -43,7 +43,7 @@ steps:
     arguments: '--no-build --verbosity normal --configuration $(buildConfiguration) --filter FullyQualifiedName!~IntegrationTests --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura'
     publishTestResults: true
 
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@2
   displayName: 'Publish code coverage report'
   inputs:
     codeCoverageTool: 'Cobertura'
