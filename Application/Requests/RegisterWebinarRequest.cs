@@ -1,4 +1,5 @@
 ﻿using Application.Requests.Interfaces;
+using Domain.Dtos;
 using Domain.Entities;
 
 namespace Application.Requests;
@@ -6,5 +7,5 @@ namespace Application.Requests;
 public class RegisterWebinarRequest : ICommandRequest
 {
     public string WebinarId { get; set; }
-    public Person Person { get; set; } = null!;
+    public PersonDto Person { get; set; } = null!;
 }

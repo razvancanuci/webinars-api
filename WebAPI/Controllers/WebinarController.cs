@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Application.Requests;
 using Asp.Versioning;
+using Domain.Dtos;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +58,7 @@ public class WebinarController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IResult> RegisterToWebinarAsync(string id, Person personRequest)
+    public async Task<IResult> RegisterToWebinarAsync(string id, PersonDto personRequest)
     {
         var request = new RegisterWebinarRequest
         {
