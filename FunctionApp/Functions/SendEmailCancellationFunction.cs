@@ -24,6 +24,6 @@ public class SendEmailCancellationFunction
     {
         var emailMessage = JsonConvert.DeserializeObject<MessageModel<EmailCancellationMessage>>(Encoding.UTF8.GetString(message.Body))?.Message;
         
-        _logger.LogInformation("Name {name}",emailMessage!.People.Count());
+        _logger.LogInformation("Name {name}",emailMessage!.WebinarId);
     }
 }

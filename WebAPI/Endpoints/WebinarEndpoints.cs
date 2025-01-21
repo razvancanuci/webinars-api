@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Application.Requests;
 using Asp.Versioning.Builder;
+using Domain.Dtos;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -73,7 +74,7 @@ public static class WebinarEndpoints
         app.MapPatch("/api/v{apiVersion:apiVersion}/webinar/{id}", async (
                 [FromRoute] string apiVersion,
                 [FromRoute] string id,
-                [FromBody] Person personRequest,
+                [FromBody] PersonDto personRequest,
                 ISender sender,
                 CancellationToken cancellationToken) =>
             {

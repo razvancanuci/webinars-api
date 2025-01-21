@@ -23,7 +23,7 @@ public class MessageServiceTests
     public async Task Send_PassedThroughPublishEndpoint()
     {
         // Act
-        await _sut.Send(new EmailCancellationMessage(new List<Person>()));
+        await _sut.Send(new EmailCancellationMessage("123"));
         
         // Assert
         _publisherMock.Verify(m => m.Publish(It.IsAny<EmailCancellationMessage>(), It.IsAny<CancellationToken>()));

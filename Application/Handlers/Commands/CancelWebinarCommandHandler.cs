@@ -34,17 +34,14 @@ public class CancelWebinarCommandHandler : RequestHandlerBase, ICommandHandler<C
 
         await DeleteWebinar(webinar, request.KeyToDelete, cancellationToken);
         
-        if (webinar.PeopleRegistered.Count > 0)
-        {
-            await SendEmail(webinar.PeopleRegistered);
-        }
+        await SendEmail(webinar.Id);
         
         return Results.NoContent();
     }
 
-    private async Task SendEmail(IEnumerable<Person> people)
+    private async Task SendEmail(string webinarId)
     {
-        var message = new EmailCancellationMessage(people);
+        var message = new EmailCancellationMessage(webinarId);
 
         await _messageService.Send(message);
     }

@@ -1,6 +1,7 @@
 ﻿using Application.Handlers.Interfaces;
 using Application.Requests;
 using Application.Services.Interfaces;
+using Domain.Entities;
 using Domain.Interfaces;
 using Domain.Messages;
 using Microsoft.AspNetCore.Http;
@@ -28,11 +29,17 @@ public class RegisterToWebinarCommandHandler : RequestHandlerBase, ICommandHandl
         }
         
         cancellationToken.ThrowIfCancellationRequested();
-        
-        webinar.PeopleRegistered.Add(request.Person);
+
+        var person = new Person
+        {
+            Name = request.Person.Name,
+            Email = request.Person.Email,
+            PhoneNumber = request.Person.PhoneNumber,
+            WebinarId = webinar.Id
+        };
+        webinar.PeopleRegistered.Add(person);
         await UnitOfWork.SaveAsync(cancellationToken);
-
-
+        
         var message = new EmailRegistrationMessage(
             request.Person.Name,
                 request.Person.Email,

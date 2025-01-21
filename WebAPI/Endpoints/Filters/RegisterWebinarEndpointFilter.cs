@@ -1,4 +1,5 @@
 ﻿using Application.Requests;
+using Domain.Dtos;
 using Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,7 @@ public class RegisterWebinarEndpointFilter(IValidator<RegisterWebinarRequest> va
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var id = context.GetArgument<string>(1);
-        var person = context.GetArgument<Person>(2);
+        var person = context.GetArgument<PersonDto>(2);
 
         var request = new RegisterWebinarRequest
         {
